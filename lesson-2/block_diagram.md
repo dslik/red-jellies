@@ -31,10 +31,10 @@ Selected Template: Sensor BSP
 
 The below hardware block diagram shows the components of the board that are used by this program:
 
-![image](https://user-images.githubusercontent.com/5757591/142782084-b1420c01-6728-4736-bc8d-1957a383fd96.png)
+![image](https://user-images.githubusercontent.com/5757591/142782364-466b4c3c-b913-4695-86a9-4135fd6c4964.png)
 
 The below software block diagram shows the relationships between software components (and hardware components):
 
-![image](https://user-images.githubusercontent.com/5757591/142782087-568c2d5c-9ac1-4652-b007-29560a9bfa5e.png)
+![image](https://user-images.githubusercontent.com/5757591/142782367-006be720-a1d1-43a6-9990-838a75266881.png)
 
 I selected the IOT01A board because it had several on-board sensors and a non-trivial yet still relatively simple example program. My initial choice of the MAX32525PICO only had a single trivial sample program that blinked an LED, which I believe would not achieve the goal of this exercise. 
