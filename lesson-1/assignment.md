@@ -39,7 +39,7 @@ If a low-cost temperature monitoring “mote”, which can be inexpensively depl
 
 ### Power Subsystem
 
-Power is supplied by a super-capacitor, which is boosted to 3.3V by a boost converter such as a [TI TSP51010](https://www.ti.com/lit/ds/slvs314f/slvs314f.pdf). Recharging is performed using inductive coupling through a PCB coil, a rectifier, and a linear regulator. High efficiency during recharging is not required. Supply voltage to the µP subsystem is enabled every 120 seconds by a RC circuit, and is reset by the µP once processing has completed.
+Power is supplied by a super-capacitor, which is boosted to 3.3V by a boost converter such as a [TI TSP61010](https://www.ti.com/lit/ds/slvs314f/slvs314f.pdf). Recharging is performed using inductive coupling through a PCB coil, a rectifier, and a linear regulator. High efficiency during recharging is not required. Supply voltage to the µP subsystem is enabled every 120 seconds by a RC circuit, and is reset by the µP once processing has completed.
 
 ### Temperature Sensor Subsystem
 
