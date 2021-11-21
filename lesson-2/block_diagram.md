@@ -8,7 +8,7 @@ Make a block diagram describing an embedded system you’d like to have or make.
 
 The below hardware block diagram is a refined version of the one in my [Lesson 1 assignment submission](https://github.com/dslik/red-jellies/blob/main/lesson-1/assignment.md):
 
-![image](https://user-images.githubusercontent.com/5757591/142780770-4b3969d8-5cf3-43e8-9a67-25a425c5c922.png)
+![image](https://user-images.githubusercontent.com/5757591/142758756-f2a65028-db08-4192-80e4-fc03a76f1335.png)
 
 While it is unlikely that I would be able to build this entire device due to a combination of significant technical challenges and my current skill level, the µP subsystem is likely achievable.
 
@@ -31,6 +31,6 @@ Selected Template: Sensor BSP
 
 The below hardware block diagram shows the components of the board that are used by this program:
 
-![image](https://user-images.githubusercontent.com/5757591/142780415-75fae9b3-6da0-4788-962b-ca71707cee26.png)
+![image](https://user-images.githubusercontent.com/5757591/142780770-4b3969d8-5cf3-43e8-9a67-25a425c5c922.png)
 
 The below software block diagram shows the relationships between software components (and hardware components):
