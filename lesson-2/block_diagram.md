@@ -8,7 +8,7 @@ Make a block diagram describing an embedded system you’d like to have or make.
 
 The below hardware block diagram is a refined version of the one in my [Lesson 1 assignment submission](https://github.com/dslik/red-jellies/blob/main/lesson-1/assignment.md):
 
-![image](https://user-images.githubusercontent.com/5757591/142758756-f2a65028-db08-4192-80e4-fc03a76f1335.png)
+![image](https://user-images.githubusercontent.com/5757591/142782077-c57d350a-1981-4baf-9988-78fe540510ca.png)
 
 While it is unlikely that I would be able to build this entire device due to a combination of significant technical challenges and my current skill level, the µP subsystem is likely achievable.
 
@@ -31,11 +31,10 @@ Selected Template: Sensor BSP
 
 The below hardware block diagram shows the components of the board that are used by this program:
 
-![image](https://user-images.githubusercontent.com/5757591/142780770-4b3969d8-5cf3-43e8-9a67-25a425c5c922.png)
+![image](https://user-images.githubusercontent.com/5757591/142782084-b1420c01-6728-4736-bc8d-1957a383fd96.png)
 
 The below software block diagram shows the relationships between software components (and hardware components):
 
-![image](https://user-images.githubusercontent.com/5757591/142781346-36987aa2-9608-4b56-a731-61523e7ff77a.png)
+![image](https://user-images.githubusercontent.com/5757591/142782087-568c2d5c-9ac1-4652-b007-29560a9bfa5e.png)
 
 I selected the IOT01A board because it had several on-board sensors and a non-trivial yet still relatively simple example program. My initial choice of the MAX32525PICO only had a single trivial sample program that blinked an LED, which I believe would not achieve the goal of this exercise. 
-
