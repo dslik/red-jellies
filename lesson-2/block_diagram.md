@@ -37,4 +37,4 @@ The below software block diagram shows the relationships between software compon
 
 ![image](https://user-images.githubusercontent.com/5757591/142782367-006be720-a1d1-43a6-9990-838a75266881.png)
 
-I selected the IOT01A board because it had several on-board sensors and a non-trivial yet still relatively simple example program. My initial choice of the MAX32525PICO only had a single trivial sample program that blinked an LED, which I believe would not achieve the goal of this exercise. 
+I selected the IOT01A board because it had several on-board sensors and a non-trivial yet still relatively simple example program. My initial choice of the MAX32625PICO only had a single trivial sample program that blinked an LED, which I believe would not achieve the goal of this exercise. 
