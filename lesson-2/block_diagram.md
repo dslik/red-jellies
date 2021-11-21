@@ -10,4 +10,4 @@ The below hardware block diagram is a refined version of the one in my [Lesson 1
 
 ![image](https://user-images.githubusercontent.com/5757591/142758756-f2a65028-db08-4192-80e4-fc03a76f1335.png)
 
-While it is unlikely that I would be able to build this entire device due to a combination of significant technical challenges and my current skill level, the µP component is likely achievable.
+While it is unlikely that I would be able to build this entire device due to a combination of significant technical challenges and my current skill level, the µP subsystem is likely achievable.
