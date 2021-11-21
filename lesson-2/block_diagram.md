@@ -34,3 +34,8 @@ The below hardware block diagram shows the components of the board that are used
 ![image](https://user-images.githubusercontent.com/5757591/142780770-4b3969d8-5cf3-43e8-9a67-25a425c5c922.png)
 
 The below software block diagram shows the relationships between software components (and hardware components):
+
+![image](https://user-images.githubusercontent.com/5757591/142781346-36987aa2-9608-4b56-a731-61523e7ff77a.png)
+
+I selected the IOT01A board because it had several on-board sensors and a non-trivial yet still relatively simple example program. My initial choice of the MAX32525PICO only had a single trivial sample program that blinked an LED, which I believe would not achieve the goal of this exercise. 
+
