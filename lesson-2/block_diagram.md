@@ -25,7 +25,7 @@ and template you did, be prepared to talk about this board in Live Class
 
 ## Assignment Submission
 
-Selected Platform: ST-Discovery-L475E-IOT01A
+Selected Platform: ST-Discovery-L475E-IOT01A ([Docs](https://www.st.com/resource/en/user_manual/dm00347848-discovery-kit-for-iot-node-multichannel-communication-with-stm32l4-stmicroelectronics.pdf))
 
 Selected Template: Sensor BSP
 
