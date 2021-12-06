@@ -61,21 +61,17 @@ int main(void)
 	testValue = 0xFE;
 	sFLASH_WriteBuffer(&testValue, 6, 1);
 	sFLASH_ReadBuffer(&testValue, 6, 1);
-	test_run("Uninitialized Value at 6", 0xFE, testValue);
+	test_run("LSB set to 0 at 6", 0xFE, testValue);
 	testValue = 0xFF;
 	sFLASH_WriteBuffer(&testValue, 6, 1);
 	sFLASH_ReadBuffer(&testValue, 6, 1);
-	test_run("Uninitialized Value at 6", 0xFE, testValue);
+	test_run("LSB still set to 0 at 6", 0xFE, testValue);
 	testValue = 0x00;
 	sFLASH_WriteBuffer(&testValue, 6, 1);
 	sFLASH_ReadBuffer(&testValue, 6, 1);
-	test_run("Uninitialized Value at 6", 0x00, testValue);
+	test_run("All bits set to 0 at 6", 0x00, testValue);
 	testValue = 0xFF;
 	sFLASH_WriteBuffer(&testValue, 6, 1);
 	sFLASH_ReadBuffer(&testValue, 6, 1);
-	test_run("Uninitialized Value at 6", 0x00, testValue);
-
-
-
-
+	test_run("All bits still set to 0 at 6", 0x00, testValue);
 }
