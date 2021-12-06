@@ -16,11 +16,11 @@ This program has been tested on OSX, and can be built using the "build.sh" shell
 
 When run, it outputs the following:
 
-![image](https://user-images.githubusercontent.com/5757591/144774956-50ff7733-33f8-4597-9572-085642381c7b.png)
+![image](https://user-images.githubusercontent.com/5757591/144778171-90711397-f6fc-4bc7-95b9-f7a02d44b082.png)
 
 The contents of the emulated flash device are stored in a file named "flash_data". This allows the output of the emulator to be inspected (and manipulated) using standard file tools.
 
-![image](https://user-images.githubusercontent.com/5757591/144775060-b7ca0bc6-1df1-4344-8805-8c8d8ab6e444.png)
+![image](https://user-images.githubusercontent.com/5757591/144778234-7a84f550-e9e5-4fff-b2ba-bddbe9071ba3.png)
 
 ### File Descriptions
 
