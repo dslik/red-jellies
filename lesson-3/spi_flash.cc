@@ -18,8 +18,10 @@
 FILE* backing_file;
 
 #define	FLASH_DATA_NAME		"flash_data"
-#define	SECTOR_SIZE			1024
-#define	SECTORS				64
+#define	PAGE_SIZE			256
+#define	PAGES				4096
+#define	SECTOR_SIZE			4096
+#define	SECTORS				256
 #define	FLASH_ERASE_VALUE	0xFF
 
 
@@ -42,10 +44,13 @@ void sFLASH_Init(void)
 
 void sFLASH_EraseSector(uint32_t SectorAddr)
 {
+	// Equivilent to a Sector Erase (20h)
+	assert(SectorAddr + SECTOR_SIZE <= PAGES * PAGE_SIZE);
+
 	uint32_t	byte_counter = 0;
 	uint8_t		init_value = FLASH_ERASE_VALUE;
 
-	fseek(backing_file, SectorAddr * SECTOR_SIZE, SEEK_SET);
+	fseek(backing_file, SectorAddr, SEEK_SET);
 
 	while(byte_counter != SECTOR_SIZE)
 	{
@@ -56,19 +61,20 @@ void sFLASH_EraseSector(uint32_t SectorAddr)
 
 void sFLASH_EraseBulk(void)
 {
+	// Equivilent to a Chip Erase (C7h)
 	uint32_t	sector_counter = 0;
 
 	while(sector_counter != SECTORS)
 	{
-		sFLASH_EraseSector(sector_counter);
+		sFLASH_EraseSector(sector_counter * SECTOR_SIZE);
 		sector_counter = sector_counter + 1;
 	}
 }
 
 void sFLASH_WritePage(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
 {
-	assert(WriteAddr + NumByteToWrite < SECTORS * SECTOR_SIZE);
-	assert(NumByteToWrite > SECTOR_SIZE);
+	assert(WriteAddr + NumByteToWrite < PAGES * PAGE_SIZE);
+	assert(NumByteToWrite > PAGE_SIZE);
 
 	uint16_t	write_counter = 0;
 
@@ -83,7 +89,7 @@ void sFLASH_WritePage(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWr
 
 void sFLASH_WriteBuffer(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
 {
-	assert(WriteAddr + NumByteToWrite < SECTORS * SECTOR_SIZE);
+	assert(WriteAddr + NumByteToWrite < PAGES * PAGE_SIZE);
 
 	// Normally we would write page by page, but we can cheat since we are backed by
 	// a file, not an actual flash device
@@ -101,7 +107,7 @@ void sFLASH_WriteBuffer(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteTo
 
 void sFLASH_ReadBuffer(uint8_t* pBuffer, uint32_t ReadAddr, uint16_t NumByteToRead)
 {
-	assert(ReadAddr + NumByteToRead < SECTORS * SECTOR_SIZE);
+	assert(ReadAddr + NumByteToRead < PAGES * PAGE_SIZE);
 
 	fseek(backing_file, ReadAddr, SEEK_SET);
 	fread(pBuffer, NumByteToRead, 1, backing_file);
