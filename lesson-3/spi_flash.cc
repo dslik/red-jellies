@@ -73,18 +73,15 @@ void sFLASH_EraseBulk(void)
 
 void sFLASH_WritePage(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
 {
+	// Equivilent to one or more Page Programs (02h)
+	// Natively the chip will wrap around the page boundary so
+	// if this code were talking to a real chip, it would have
+	// to send multiple page programs when a write crosses
+	// a page boundary.
 	assert(WriteAddr + NumByteToWrite < PAGES * PAGE_SIZE);
 	assert(NumByteToWrite > PAGE_SIZE);
 
-	uint16_t	write_counter = 0;
-
-	fseek(backing_file, WriteAddr, SEEK_SET);
-
-	while(write_counter != NumByteToWrite)
-	{
-		fwrite(&pBuffer[write_counter], 1, 1, backing_file);
-		write_counter = write_counter + 1;
-	}
+	sFLASH_WriteBuffer(pBuffer, WriteAddr, NumByteToWrite);
 }
 
 void sFLASH_WriteBuffer(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
@@ -94,13 +91,20 @@ void sFLASH_WriteBuffer(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteTo
 	// Normally we would write page by page, but we can cheat since we are backed by
 	// a file, not an actual flash device
 
+	// This simulates the situation where if you write without first having erased
+	// any "0"s won't be changed to "1"s.
+
 	uint16_t	write_counter = 0;
+	char		raw_buffer = 0;
 
 	fseek(backing_file, WriteAddr, SEEK_SET);
 
 	while(write_counter != NumByteToWrite)
 	{
-		fwrite(&pBuffer[write_counter], 1, 1, backing_file);
+		fread(&raw_buffer, 1, 1, backing_file);
+		fseek(backing_file, -1, SEEK_CUR);
+		raw_buffer = pBuffer[write_counter] & raw_buffer;
+		fwrite(&raw_buffer, 1, 1, backing_file);
 		write_counter = write_counter + 1;
 	}
 }

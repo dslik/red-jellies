@@ -56,4 +56,26 @@ int main(void)
 	test_title("Reading Range of Values");
 	sFLASH_ReadBuffer((uint8_t*) &buffer, 1024, strlen(StringValue) + 1);
 	test_run("String Value as Expected", "Hello Flash!", (char*) &buffer);
+
+	test_title("Overwriting Values without Erase");
+	testValue = 0xFE;
+	sFLASH_WriteBuffer(&testValue, 6, 1);
+	sFLASH_ReadBuffer(&testValue, 6, 1);
+	test_run("Uninitialized Value at 6", 0xFE, testValue);
+	testValue = 0xFF;
+	sFLASH_WriteBuffer(&testValue, 6, 1);
+	sFLASH_ReadBuffer(&testValue, 6, 1);
+	test_run("Uninitialized Value at 6", 0xFE, testValue);
+	testValue = 0x00;
+	sFLASH_WriteBuffer(&testValue, 6, 1);
+	sFLASH_ReadBuffer(&testValue, 6, 1);
+	test_run("Uninitialized Value at 6", 0x00, testValue);
+	testValue = 0xFF;
+	sFLASH_WriteBuffer(&testValue, 6, 1);
+	sFLASH_ReadBuffer(&testValue, 6, 1);
+	test_run("Uninitialized Value at 6", 0x00, testValue);
+
+
+
+
 }
