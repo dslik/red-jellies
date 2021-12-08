@@ -96,8 +96,6 @@ void sFLASH_WritePage(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWr
 		uint32_t	page_start = (WriteAddr / PAGE_SIZE) * PAGE_SIZE;
 		uint32_t	bytes_past_page = (WriteAddr + NumByteToWrite - 1) % PAGE_SIZE;
 
-printf("page start: %i, bytes_past_page: %i\n", page_start, bytes_past_page);
-
 		// Write up to page boundary
 		sFLASH_WriteBuffer(pBuffer, WriteAddr, NumByteToWrite - bytes_past_page - 1);		
 
