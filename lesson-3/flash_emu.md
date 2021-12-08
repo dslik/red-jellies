@@ -16,7 +16,7 @@ This program has been tested on OSX, and can be built using the "build.sh" shell
 
 When run, it outputs the following:
 
-![image](https://user-images.githubusercontent.com/5757591/145149398-b30fa463-2e62-4f7a-a9a1-3d7f18f42f58.png)
+![image](https://user-images.githubusercontent.com/5757591/145149883-2e4a6538-007f-4cff-8abc-642ee4480061.png)
 
 The contents of the emulated flash device are stored in a file named "flash_data". This allows the output of the emulator to be inspected (and manipulated) using standard file tools.
 
@@ -38,4 +38,3 @@ The contents of the emulated flash device are stored in a file named "flash_data
 * stm32f2xx.h - A shim header to allow the provided STM header to be used unmodified.
 * test_utils.cc - Some simple test utility functions
 * test_utils.h - Headers for the test utility functions
-
