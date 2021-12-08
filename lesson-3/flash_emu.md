@@ -16,11 +16,16 @@ This program has been tested on OSX, and can be built using the "build.sh" shell
 
 When run, it outputs the following:
 
-![image](https://user-images.githubusercontent.com/5757591/144778171-90711397-f6fc-4bc7-95b9-f7a02d44b082.png)
+![image](https://user-images.githubusercontent.com/5757591/145149398-b30fa463-2e62-4f7a-a9a1-3d7f18f42f58.png)
 
 The contents of the emulated flash device are stored in a file named "flash_data". This allows the output of the emulator to be inspected (and manipulated) using standard file tools.
 
-![image](https://user-images.githubusercontent.com/5757591/144778234-7a84f550-e9e5-4fff-b2ba-bddbe9071ba3.png)
+![image](https://user-images.githubusercontent.com/5757591/145149618-efcc1c39-1ecf-456c-87c0-ca30db13b423.png)
+
+## Special Notes
+
+* Handles page wrapping as defined by the W25Q80DVSNIG Page Programs (02h) command.
+* Handles flash behaviour when overwriting data without erasing (1's can be set to 0's, but 0's can't be set to 1's)
 
 ### File Descriptions
 
