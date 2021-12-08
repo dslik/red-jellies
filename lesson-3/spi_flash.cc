@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// Simple Flash Emulation Layer
+// Simple Flash Emulation Layer based on a W25Q80DVSNIG SPI Flash device
 // Uses a backing file so you can inspect/manipulate the contents of the flash
 // device using standard file tools.
 // Copyright 2021 David Slik - Released into the public domain
@@ -25,6 +25,9 @@ FILE* backing_file;
 #define	FLASH_ERASE_VALUE	0xFF
 
 
+// -----------------------------------------------------------------------------
+// Initializes the flash device by creating and erasing the backing file.
+// -----------------------------------------------------------------------------
 void sFLASH_Init(void)
 {
 	int file_exists = false;
@@ -42,9 +45,12 @@ void sFLASH_Init(void)
 	}
 }
 
+// -----------------------------------------------------------------------------
+// Erases a single sector to all 0xFF.
+// Equivilent to performing a W25Q80DVSNIG Sector Erase (20h)
+// -----------------------------------------------------------------------------
 void sFLASH_EraseSector(uint32_t SectorAddr)
 {
-	// Equivilent to a Sector Erase (20h)
 	assert(SectorAddr + SECTOR_SIZE <= PAGES * PAGE_SIZE);
 
 	uint32_t	byte_counter = 0;
@@ -59,9 +65,12 @@ void sFLASH_EraseSector(uint32_t SectorAddr)
 	}
 }
 
+// -----------------------------------------------------------------------------
+// Erases all sectors to all 0xFF.
+// Equivilent to performing a W25Q80DVSNIG Chip Erase (C7h)
+// -----------------------------------------------------------------------------
 void sFLASH_EraseBulk(void)
 {
-	// Equivilent to a Chip Erase (C7h)
 	uint32_t	sector_counter = 0;
 
 	while(sector_counter != SECTORS)
@@ -71,28 +80,48 @@ void sFLASH_EraseBulk(void)
 	}
 }
 
+// -----------------------------------------------------------------------------
+// Writes data to a page. If the NumBytesToWrite goes past the end of the page,
+// the data wraps around the page boundary to the start of the page.
+// Equivilent to performing a W25Q80DVSNIG Page Programs (02h)
+// -----------------------------------------------------------------------------
 void sFLASH_WritePage(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
 {
-	// Equivilent to one or more Page Programs (02h)
-	// Natively the chip will wrap around the page boundary so
-	// if this code were talking to a real chip, it would have
-	// to send multiple page programs when a write crosses
-	// a page boundary.
 	assert(WriteAddr + NumByteToWrite < PAGES * PAGE_SIZE);
-	assert(NumByteToWrite > PAGE_SIZE);
+	assert(NumByteToWrite <= PAGE_SIZE);
 
-	sFLASH_WriteBuffer(pBuffer, WriteAddr, NumByteToWrite);
+	// Check if the data to write wraps around the page boundary
+	if((WriteAddr / PAGE_SIZE) != ((WriteAddr + NumByteToWrite) / PAGE_SIZE))
+	{
+		uint32_t	page_start = (WriteAddr / PAGE_SIZE) * PAGE_SIZE;
+		uint32_t	bytes_past_page = (WriteAddr + NumByteToWrite - 1) % PAGE_SIZE;
+
+printf("page start: %i, bytes_past_page: %i\n", page_start, bytes_past_page);
+
+		// Write up to page boundary
+		sFLASH_WriteBuffer(pBuffer, WriteAddr, NumByteToWrite - bytes_past_page - 1);		
+
+		// Write data wrapped around page boundary
+		sFLASH_WriteBuffer(&pBuffer[NumByteToWrite - bytes_past_page - 1], page_start, bytes_past_page);		
+	}
+	else
+	{
+		sFLASH_WriteBuffer(pBuffer, WriteAddr, NumByteToWrite);		
+	}
 }
 
+// -----------------------------------------------------------------------------
+// Writes data across one or more pages.
+// Typically this would be implemented by multiple calls to sFLASH_WritePage,
+// but we can just directly write to our backing file because we don't have page
+// limitations like the physical device would have.
+// 
+// This function also simulates the situation where if you write without first
+// having erased the page. Specifically, any "0"s won't be changed to "1"s.
+// -----------------------------------------------------------------------------
 void sFLASH_WriteBuffer(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
 {
 	assert(WriteAddr + NumByteToWrite < PAGES * PAGE_SIZE);
-
-	// Normally we would write page by page, but we can cheat since we are backed by
-	// a file, not an actual flash device
-
-	// This simulates the situation where if you write without first having erased
-	// any "0"s won't be changed to "1"s.
 
 	uint16_t	write_counter = 0;
 	char		raw_buffer = 0;
@@ -109,6 +138,9 @@ void sFLASH_WriteBuffer(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteTo
 	}
 }
 
+// -----------------------------------------------------------------------------
+// Reads data from one or more pages.
+// -----------------------------------------------------------------------------
 void sFLASH_ReadBuffer(uint8_t* pBuffer, uint32_t ReadAddr, uint16_t NumByteToRead)
 {
 	assert(ReadAddr + NumByteToRead < PAGES * PAGE_SIZE);

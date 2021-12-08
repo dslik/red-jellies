@@ -74,4 +74,27 @@ int main(void)
 	sFLASH_WriteBuffer(&testValue, 6, 1);
 	sFLASH_ReadBuffer(&testValue, 6, 1);
 	test_run("All bits still set to 0 at 6", 0x00, testValue);
+
+	test_title("Testing page boundary wrapping");
+	sFLASH_WritePage((uint8_t*) StringValue, 1533, strlen(StringValue) + 1);
+	sFLASH_ReadBuffer(&testValue, 1533, 1);
+	test_run("Expected Value at 1533", 'H', testValue);
+	sFLASH_ReadBuffer(&testValue, 1534, 1);
+	test_run("Expected Value at 1534", 'e', testValue);
+	sFLASH_ReadBuffer(&testValue, 1535, 1);
+	test_run("Expected Value at 1535", 'l', testValue);
+	sFLASH_ReadBuffer(&testValue, 1536, 1);
+	test_run("Expected Value at 1536", 0xFF, testValue);
+	sFLASH_ReadBuffer(&testValue, 1537, 1);
+	test_run("Expected Value at 1537", 0xFF, testValue);
+	sFLASH_ReadBuffer(&testValue, 1538, 1);
+	test_run("Expected Value at 1538", 0xFF, testValue);
+	sFLASH_ReadBuffer(&testValue, 1279, 1);
+	test_run("Expected Value at 1279", 0xFF, testValue);
+	sFLASH_ReadBuffer(&testValue, 1280, 1);
+	test_run("Expected Value at 1280", 'l', testValue);
+	sFLASH_ReadBuffer(&testValue, 1281, 1);
+	test_run("Expected Value at 1281", 'o', testValue);
+	sFLASH_ReadBuffer(&testValue, 1282, 1);
+	test_run("Expected Value at 1282", ' ', testValue);
 }

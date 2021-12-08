@@ -13,7 +13,7 @@ void test_title(const char* title)
 {
 	printf("-----------------------------------------------------------------------------");
 	printf("\x1B[0G");
-	printf("%s \n", title);
+	printf("\x1B[1;97m%s\x1B[0m \n", title);
 }
 
 void test_run(const char* title, uint64_t expected_value, uint64_t actual_value)
