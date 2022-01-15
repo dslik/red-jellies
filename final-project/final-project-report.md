@@ -377,6 +377,8 @@ Powered Off     |            |               |           | Power Off | Uninitial
 
 ### Power Analysis
 
+TODO: Traces of power consumption for each of the three software states.
+
 ## Microcontroller Subsystem
 
 ### Microcontroller
@@ -396,6 +398,9 @@ TODO: Additional technical detail on transmission, encoding and how it is proces
 ## Software
 
 ### State Management
+
+
+A watchdog interrupt is used to ensure that the system does not remain stuck powered on if a software or I/O fault occurs.
 
 ### Charging
 
@@ -461,8 +466,18 @@ There are no provisions for field upgradabilty, as that would require an opening
 
 ## Software
 
+TODO: Link to code.
+
 # Futures
+
+As the power subsystem is not complete, future work on this project would likely focus on that area.
+
+The sensor architecture outlined could be extended to other low-power sensors, such as a light level/colour sensor. However, the design tradeoffs around resin encapsulation and the use of a super capacitor imposes significant limitations on which sensors could be used.
+
+TODO: Elaborate more here.
 
 # Resources
 
 # Grading
+
+A button-driven interrupt is not used, because there are no buttons in the system. Instead, a timer interrupt to provide software watchdog functionality, and is used to demonstrate understanding of interrupt handling.
