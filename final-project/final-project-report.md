@@ -71,7 +71,7 @@ As can be easily seen, this is cost prohibitive, and thus most "precision agricu
 
 ![image](https://user-images.githubusercontent.com/5757591/149609589-c5b4aaff-603e-43e8-a5c4-e75594ccfc80.png)
 
-Figure 1 - NVDI Infrared image of a farm ([CC-BY-SA-3.0 Attr](https://commons.wikimedia.org/wiki/File:SUAS_StardustII_Ndvi_sml.jpg))
+Figure 1 - Example NVDI Infrared image of a farm ([CC-BY-SA-3.0 Attr](https://commons.wikimedia.org/wiki/File:SUAS_StardustII_Ndvi_sml.jpg))
 
 Due to these difficulties, field-deployable day-to-month duration fine-grained temperature data collection has been uneconomical, and thus infrequently practiced for all except the most well-funded research group. Calor's mission is to change this.
 
@@ -297,8 +297,10 @@ The microprocessor subsystem contains the following components:
 * Temperature Sensor: A I2C high-precision temperature sensor used to measure the temperature. Since the entire system is off 99% of the time, the temperature rise of the power and microprocessor subsystem does not affect readings.
 * ADC I/O: Two ADC channels used to measure the inductive power charging rail and the super capacitor power storage rail
 * SWD I/O: A debug port used for programming and testing
-* UART I/O: A debug port used for testing
+* UART I/O: A serial debug port used for testing
 * RGB Smart LED: A smart LED used to indicate sensor status and to transfer the sensor serial number and stored data
+
+The following microprocessor peripherals are used: 2x ADC, I2C, SPI, UART, GPIO to smart LED, and the SWD debug.
 
 ![image](https://user-images.githubusercontent.com/5757591/149612875-07ddd5e6-81d5-46aa-b4a8-495df4d1ac63.png)
 
@@ -327,7 +329,37 @@ R2, R3		4.7K I2C Pull-up
 
 ### Firmware
 
+The firmware implements a three-branch state machine that is performed each time the sensor is powered up.
+
+https://user-images.githubusercontent.com/5757591/148633404-659b0f80-7a87-428a-8e35-b16497553e9d.png![image](https://user-images.githubusercontent.com/5757591/149613011-e065a7b4-dd97-447f-9560-1b7bdca45153.png)
+
+The three conditions are:
+* Powered up due to charging
+* Powered up due to NFC proximity
+* Powered up due to wakeup timer
+
+![image](https://user-images.githubusercontent.com/5757591/149613052-e0a3bf4c-2671-46dc-876f-cba32239e43d.png)
+
+The simplified state tabel is as follows:
+
+```
+State           | Actions                                            | Next State
+                | System     | Memory        | LED       | Power     |                | >3v          | > 0.5v        | < 0.5v         |
+----------------|------------|---------------|-----------|-----------|----------------|--------------|---------------|----------------|
+Uninitialized   | Initialize |               |           |           | Initialized    |              |               |                |
+Initialized     |            |               |           | Check Vca |                | Wait for Vcb | Data Sent     | Reading Stored |
+Wait for Vcb    |            |               | Send Data |           | Memory Cleared |              |               |                |
+Memory Cleared  |            | Clear Memory  | Blink     |           | Powered Off    |              |               |                |
+Data Sent       |            |               | Send Data |           | Powered Off    |              |               |                |
+Reading Stored  |            | Store Reading |           |           | Powered Off    |              |               |                |
+Powered Off     |            |               |           | Power Off | Uninitialized  |              |               |                |
+----------------|------------|---------------|-----------|-----------|----------------|--------------|---------------|----------------|
+```
+
+
 ### Smartphone Application
+
+> ⚠️ The smartphone application is out of scope for the purposes of the Making Embedded Systems final project
 
 # Implementation
 
@@ -355,6 +387,12 @@ R2, R3		4.7K I2C Pull-up
 
 ### Optical Signalling
 
+A WS2812C programmable RGB LED is used for optical data transfer via PWM at 20 Hz, with 16 colours providing an effective bandwidth of 60 bps.
+
+Using an RLE + simple dictionary delta encoding, even thousands of temperature values can be transmitted in under 30 seconds.
+
+TODO: Additional technical detail on transmission, encoding and how it is processed by the smartphone app.
+
 ## Software
 
 ### State Management
@@ -371,17 +409,51 @@ R2, R3		4.7K I2C Pull-up
 
 ### Software Dependencies
 
+The software depends on the Raspberry Pi (Trading) Limited [Raspberry Pi Pico SDK](https://github.com/raspberrypi/pico-sdk).
+
+No other software libraries are used.
+
 # Design for Manufacturing
 
 ## Component Selection
 
+All components have been selected to ensure that they are in-stock and sufficient quantities can be secured to allow for a short-run manufacturing of at least one hundred units.
+
+The choice of the Raspberry Pi Pico was primarily based on component avaiability and that this microprocessor is sufficiently capable for the required firmware, while being very low power.
+
+The Flash Memory is larger than needed, but smaller capacities could not be secured due to component shortages.
+
+The super capacitor was chosen based on what components were on hand.
+
 ## Packaging
+
+The power storage baord is soldered directly to the super capacitor. The microprocessor board stacks on top of this board, with the power transfer board stacked on top.
+
+ALl of these components, once tested and programmed, are encased in a hard resin, which provides protection against the elements. The resin is transparent to permit optical signling, and is wrapped in a white sticker to reflect sunlight and contain instructions and branding.
 
 ## Assembly
 
+Each of the three boards are assembled and tested seperately.
+
+For prototype-level production, the boards are manually stenciled, with components being placed using a manual pick-and-place machine.
+
+When boards pass board-level tests, they are connected together, then the entire sensor is tested as an integrated unit. Upon a pass, the sensor is encapsulated in resin and package for shipment.
+
 ## Test
 
+The power transfer board is tested by using a charger and moving the board closer to the charger while checking for the expected voltage curves.
+
+The power board is tested by using a programmable power supply to simulate the charging subsystem, as the test infrastructure monitors the charging, super capacitor voltage and vcc microprocessor supply rails. A full charge and discharge cycle is simulated.
+
+The microprocessor board is tested by verifying connectivity to the microprocessor via the SWD port, programming the firmware into the flash memory, and simulating all three firmware code execution branches by varying the voltage sense inputs.
+
+TODO: If this were to be a real product, EMC and thermal chamber testing would be required.
+
 ## Firmware Update
+
+Firmware can be updated via the SWD port. This is primarily used during development and test, as once encapsulated in resin, these ports are no longer accessible.
+
+There are no provisions for field upgradabilty, as that would require an opening through the layer of enviromental protection provided by the resin.
 
 # Build Instructions
 
