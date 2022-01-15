@@ -105,7 +105,7 @@ Calor has the following requirements:
 * As a user, I want to deploy sensors in wet, cold, hot and dirty environments without them failing, so I can successfully collect data.
   * Sensors shall be able to survive a wide range of temperatures (-20 to 50 C)
   * Sensors shall be able to survive direct sunlight for extended periods of time (months)
-  * Sensors shall be able to survive liquid immersion
+  * Sensors shall be able to survive liquid immersion (NEMA 6P)
   * Sensors shall be able to survive freezing
 
 * As a user, I want to collect data at 1 - 2 minute per sample, for durations up to months, so I have sufficient data for analysis.
@@ -231,7 +231,97 @@ If a sensor doesn't blink when charging, it is likely defective, and should be r
 
 ## System Components
 
+![image](https://user-images.githubusercontent.com/5757591/149612079-d7420201-e9ac-45f7-be58-dffd8b8d6fd5.png)
+
+Calor consists of the following components:
+
+Charger - Converts DC into a magnetic resonant coupling to induce current into nearby sensor devices to recharge the super capacitor.
+
+Sensor - Sealed device containing a charging subsystem, a power storage and management subsystem, and a microprocessor subsystem, with an optical communication interface, and internal test pads for test and development.
+
+Phone - A standard smartphone running a custom app that manages and visualizes data collected by the sensors.
+
+Test System - A harness for testing and programming the sensor before it is encapsulated in resin.
+
+> ⚠️ Only the microprocessor subsystem and the test system is in-scope for the class. Other components are being developed on a "best-effort" basis.
+
+
 ## Hardware Subsystems
+
+https://user-images.githubusercontent.com/5757591/148632269-927e1d28-1843-4b77-b5be-181597f47de9.png![image](https://user-images.githubusercontent.com/5757591/149612333-b4f05702-f7a3-458e-999d-a4ef55c3d2ff.png)
+
+__Charging Subsystem__
+
+The charging subsystem contains the following components:
+* Magnetic resonant coupling coil: Receives power from the charger, and to a lesser extent, from the smartphone NFC subsystem
+* Rectifier: Transforms the AC voltage into a DC voltage
+
+TODO: Board design and BOM
+
+__Power Subsystem__
+
+The power subsystem contains the following components:
+* Charging Protection: A zener diode that prevents the voltage from the charging subsystem from exceeding the rated value of the linear regulator
+* Charging Regulator: A linear regulator that steps down the charging voltage to a lower voltage suitable for charging the super capacitor
+* Super capacitor: Stores charge to run the sensor while deployed
+* Super capacitor protection: A zener diode that prevents the charging voltage from exceeding the rating of the super capacitor.
+* Sense rails: Voltage monitoring to allow software measurement of the charging and super capacitor rails
+* Boost converter: Supplies a regulated voltage for the microprocessor
+* Power-down and Wakeup delay: Low-power logic that when activated, powers down the boost converter and waits for a period of time before powering it back up. This component is also activated when indictive power transfer is detected.
+
+![image](https://user-images.githubusercontent.com/5757591/149612768-e282e87c-e3b5-48d2-8977-7c01a3bf3f5d.png)
+
+Figure N - PCB Design
+
+![image](https://user-images.githubusercontent.com/5757591/149612782-4a3a35d2-f76c-4d40-9bb3-8139e03a6e8c.png)
+
+Figure N - PCB Rendering
+
+Bill of Materials
+
+```
+U1			2.5v regulator			MIC5209-2.5BSTR
+U2			Boost converter			TPS61010DGSR
+U3			Schmitt Trigger Inverter	74LVC1G14GW		https://www.digikey.ca/en/products/detail/nexperia-usa-inc/74LVC1G14GW-Q1001/3679038
+L1			10 mH inductor			ASPI-0602S-100M-T	https://www.digikey.ca/en/products/detail/abracon-llc/ASPI-0602S-100M-T/2343244
+C1, C2			6.3V 10uF 20% Tant		TAJB106M006R	
+R1			10 Ohm 1/2 Watt			RC1206FR-7W10RL
+CN2, CN3		3 pin SMT angle header		TSM-103-02-L-SV		https://www.digikey.ca/en/products/detail/samtec-inc/TSM-103-02-L-SV/6679010
+```
+
+__Microprocessor Subsystem__
+
+The microprocessor subsystem contains the following components:
+* Microprocessor: A low-power ARM CORTEX-M microprocessor that runs the firmware for the sensor
+* Flash Memory: QSPI Flash used to store the firmware, the sensor serial number, and temperature sensor readings
+* Temperature Sensor: A I2C high-precision temperature sensor used to measure the temperature. Since the entire system is off 99% of the time, the temperature rise of the power and microprocessor subsystem does not affect readings.
+* ADC I/O: Two ADC channels used to measure the inductive power charging rail and the super capacitor power storage rail
+* SWD I/O: A debug port used for programming and testing
+* UART I/O: A debug port used for testing
+* RGB Smart LED: A smart LED used to indicate sensor status and to transfer the sensor serial number and stored data
+
+![image](https://user-images.githubusercontent.com/5757591/149612875-07ddd5e6-81d5-46aa-b4a8-495df4d1ac63.png)
+
+Figure N - PCB Design
+
+![image](https://user-images.githubusercontent.com/5757591/149612896-923925ec-66c8-4d7a-bbff-9ae9d39783da.png)
+
+Figure N - PCB Rendering
+
+Bill of Materials
+
+```
+U1			Microcontroller			RP2040TR13		https://www.digikey.ca/en/products/detail/raspberry-pi/SC0914-13/14306010
+U2			Flash Memory			W25Q16JVZPIQ	https://www.digikey.ca/en/products/detail/winbond-electronics/W25Q16JVZPIQ-TR/6193781
+U3			Temperature Sensor		TMP117AIDRVR	https://www.digikey.ca/en/products/detail/texas-instruments/TMP117AIDRVR/9685284
+U4			Temperature Sensor		LM75CIMX-3		https://www.digikey.ca/en/products/detail/texas-instruments/LM75CIMX-3-NOPB/2043437
+X1			12 MHz oscillator		COM1305-12.000-EXT-T-TR  https://www.digikey.ca/en/products/detail/raltron-electronics/COM1305-12-000-EXT-T-TR/10272064
+D1			RGB LED				WS2812C			
+C1 - C3		1 uf thin film capacitor	
+C4 - C16		100 nf thin film capacitor	
+R1			10K Resistor			
+R2, R3		4.7K I2C Pull-up
+```
 
 ## Software Subsystems
 
