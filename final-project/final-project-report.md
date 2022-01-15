@@ -19,6 +19,8 @@ Calor is the final project for the Classpert [Making Embedded Systems](https://c
   * System Components
   * Hardware Subsystems
   * Software Subsystems
+    * Firmware
+    * Smartphone Application
 * Implementation
   * Power Subsystem
     * Charging
@@ -34,10 +36,12 @@ Calor is the final project for the Classpert [Making Embedded Systems](https://c
     * Optical Signalling
   * Software
     * State Management
-    * Data Acquisition
-    * Data Storage
-    * Data Transfer
-    * Attribution
+    * Charging
+    * Activation (placement)
+    * Acquisition
+    * Transfer (collection)
+    * Analysis
+    * Software Dependencies
 * Design for Manufacturing
   * Component Selection
   * Packaging
@@ -74,9 +78,9 @@ Due to these difficulties, field-deployable day-to-month duration fine-grained t
 The target market for Calor are individuals and organizations who meet a majority of the following criteria:
 
 __Technical Criteria__
-* Need to collect temperature data over time (> 1 hour)
-* Need to collect temperature data over medium to large areas (> 100 sq feet)
-* Need to be able to handle hostile environmental conditions (submersion, freezing, direct sunlight)
+* Collect temperature data over time (> 1 hour)
+* Collect temperature data over medium to large areas (> 100 sq feet)
+* Handle hostile environmental conditions (submersion, freezing, direct sunlight)
 
 Furthermore, to make the product usable by a larger target market:
 
@@ -96,6 +100,37 @@ It is anticipated that additional target markets will emerge when the above desc
 
 # Requirements
 
+Calor has the following requirements:
+
+* As a user, I want to deploy sensors in wet, cold, hot and dirty environments without them failing, so I can successfully collect data.
+  * Sensors shall be able to survive a wide range of temperatures (-20 to 50 C)
+  * Sensors shall be able to survive direct sunlight for extended periods of time (months)
+  * Sensors shall be able to survive liquid immersion
+  * Sensors shall be able to survive freezing
+
+* As a user, I want to collect data at 1 - 2 minute per sample, for durations up to months, so I have sufficient data for analysis.
+  * Sensors must power down when not collecting data
+  * Sensors must have sufficient stored energy to collect the desired number of samples
+  * Sensors must store collected data in a non-volatile storage medium
+  * Sensors must be time synchronized such that sensor-to-sensor sample rate drift is minimized and can be effectively removed through post-processing
+
+* As a user, I want the sensors to last a long time, so that their lifetime cost and environmental impact is minimized.
+  * Sensors shall have a lifespan measured in years
+  * Sensors shall minimize and eliminate use of toxic materials
+
+* As a user, I want to quickly recharge sensors, so they can quickly be re-deployed.
+  * Sensors shall be able to be bulk charged in parallel
+  * Sensor charging minimizes handling time
+  * Sensor charge state shall be easily visible
+
+* As a user, I want to keep track of where sensors are placed, so I can find them again.
+  * When a sensor is placed into the environment, when it is activated, the GPS location of the sensor is recorded
+  * When a sensor is to be collected, the GPS location is used to indicate the location of the sensor
+
+* As a user, I want to easily upload and process the sensor data, so I can quickly see results.
+  * When sensors are collected, data should be transmitted wirelessly to avoid fiddling with cables and ports
+  * When sensors are collected, the temperature time series data is associated with the GPS location of the sensor
+  * When sensors are collected, the locations and temperature time series data can be overlaid on a map
 
 # User's Guide
 
@@ -106,6 +141,10 @@ It is anticipated that additional target markets will emerge when the above desc
 ## Hardware Subsystems
 
 ## Software Subsystems
+
+### Firmware
+
+### Smartphone Application
 
 # Implementation
 
@@ -137,13 +176,17 @@ It is anticipated that additional target markets will emerge when the above desc
 
 ### State Management
 
-### Data Acquisition
+### Charging
 
-### Data Storage
+### Activation (placement)
 
-### Data Transfer
+### Acquisition
 
-### Attribution
+### Transfer (collection)
+
+### Analysis
+
+### Software Dependencies
 
 # Design for Manufacturing
 
