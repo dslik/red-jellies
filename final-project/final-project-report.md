@@ -331,7 +331,7 @@ R2, R3		4.7K I2C Pull-up
 
 The firmware implements a three-branch state machine that is performed each time the sensor is powered up.
 
-https://user-images.githubusercontent.com/5757591/148633404-659b0f80-7a87-428a-8e35-b16497553e9d.png![image](https://user-images.githubusercontent.com/5757591/149613011-e065a7b4-dd97-447f-9560-1b7bdca45153.png)
+![image](https://user-images.githubusercontent.com/5757591/149613011-e065a7b4-dd97-447f-9560-1b7bdca45153.png)
 
 The three conditions are:
 * Powered up due to charging
