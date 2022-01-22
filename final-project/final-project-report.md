@@ -248,7 +248,7 @@ Test System - A harness for testing and programming the sensor before it is enca
 
 ## Hardware Subsystems
 
-https://user-images.githubusercontent.com/5757591/148632269-927e1d28-1843-4b77-b5be-181597f47de9.png![image](https://user-images.githubusercontent.com/5757591/149612333-b4f05702-f7a3-458e-999d-a4ef55c3d2ff.png)
+![image](https://user-images.githubusercontent.com/5757591/149612333-b4f05702-f7a3-458e-999d-a4ef55c3d2ff.png)
 
 __Charging Subsystem__
 
