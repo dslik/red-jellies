@@ -105,3 +105,9 @@ As uninitialized variables and initialized variables were all in the stack, swap
 Uninitialized and initialized global variables were are separated by a fair number of bytes in the .bss. However, I was unable to identify what changes to the linker script would swap them around. All of the .bss contents were added by a single line.
 
 Thus, I was unable to modify my linker file to swap your uninitialized variables and initialized global variables.
+
+# References
+
+See page A2-6 for details on the ARM R13 register - https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/third-party/ddi0100e_arm_arm.pdf
+
+(I'm showing my age in this being my go-to reference manual, as a long, long time ago, I did a bunch of development on the Intel StrongARM platforms. I still have a SA1100 Brutus development board in a box somewhere.)
