@@ -8,7 +8,7 @@ Choose a small algorithm to implement in different ways. Describe when/why you m
 
 # Assignment Submission
 
-I had originally selected bit-reversal, but since there is a single ARM assembly instruction (RBIT) that will do this for you, that felt like cheating.
+I had originally was going to try a few different approaches to bit-reversal that weren't covered in the quiz, but since there is a single ARM assembly instruction (RBIT) that will do this for you, it felt like cheating because there was one solution that would be better in every dimension.
 
 As a second choice, I selected to take a look at convering a 32-bit integer into a string that contains the binary values of the integer. This is both useful (since many times you want to see the binary representation of a value when debugging), and non-trivial.
 
