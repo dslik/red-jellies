@@ -21,3 +21,8 @@ Approaches to reducing power consumption:
 * Memory can be powered down
 * Disable USB
 * Reduce power consumed by external devices (e.g. LEDs)
+
+## Resources
+
+* https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf
+* https://raspberrypi.github.io/pico-sdk-doxygen/examples_page.html
