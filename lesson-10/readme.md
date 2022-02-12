@@ -72,7 +72,7 @@ I was successfully able to half the power consumption by reducing the clock spee
 
 ![image](https://user-images.githubusercontent.com/5757591/153702435-521f7173-82f8-4277-ba9a-0e0c74ba0f77.png)
 
-Note that these measured numbers include power consumption for one LED, measured at 4 ma.
+Power measurements were conducted using a Joulescope. Red lines represent maximum and minimum power consumption, and the yellow line represents the average power consumption for the measurement bin. Note that these measured numbers include power consumption for one LED, measured at 4 ma.
 
 ## Test Program Source
 
