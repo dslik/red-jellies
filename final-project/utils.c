@@ -13,6 +13,8 @@
 #define I2C_SDA_PIN 16
 #define I2C_SCL_PIN 17
 #define WS2812_PIN  18
+#define SWITCH_IN   14
+
 
 
 char binary_string[] = "00000000000000000000000000000000";
@@ -240,5 +242,58 @@ float flash_read_value(uint16_t offset)
     flash_accessor = (float*) (FLASH_START + FLASH_OFFSET);
 
     return (float) flash_accessor[offset];
+}
+
+
+// ---------------------------------------------------------------------------------
+// Button Deboucing
+// ---------------------------------------------------------------------------------
+// Source: Copyright 2022 David Slik. Own work.
+// ---------------------------------------------------------------------------------
+#define DEBOUNCE_DELAY  20
+
+// Global variable for ISR
+volatile uint8_t debounce_disable;
+volatile uint8_t debounced_switch;
+
+// Initialization of input lines
+void debounce_init(void)
+{
+    gpio_init(SWITCH_IN);
+    gpio_set_dir(SWITCH_IN, GPIO_IN);
+    gpio_set_irq_enabled_with_callback(SWITCH_IN,
+                                       GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
+                                       true, &isr);
+    debounced_switch = gpio_get(SWITCH_IN);
+}
+
+// Timer callback for when button is pressed
+int64_t debounce_callback(alarm_id_t id, void *user_data)
+{
+    uint8_t gpio_line_value;
+
+    debounce_disable = false;
+    gpio_line_value = gpio_get(SWITCH_IN);
+    
+    // printf("DEBUG: Debounce Callback, Switch was %i, is %i\n", debounced_switch, gpio_line_value);
+
+    if(gpio_line_value != debounced_switch)
+    {
+        debounced_switch = gpio_line_value;
+    }
+
+    return false;
+}
+
+// Interrupt Service Routine
+void isr(uint gpio, uint32_t events)
+{
+    // printf("DEBUG: events: %#x, disable %i\n", events, debounce_disable);
+
+    if(debounce_disable == false)
+    {
+        debounce_disable = true;
+        add_alarm_in_ms(DEBOUNCE_DELAY, &debounce_callback, NULL, false);
+    }
 }
 

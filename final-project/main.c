@@ -30,6 +30,9 @@ int main() {
     // Initialize the temperature sensor
     lm75_reg_init(I2C_LM75_ADDR);
 
+    // Initialize debounce
+    debounce_init();
+    
     // Initialize the WS2812 smart LED
     ws2812_init();
     put_pixel(0x00000A00);
@@ -39,9 +42,12 @@ int main() {
     float    temp;
 
     while (true) {
-        temp = lm75_reg_read(I2C_LM75_ADDR);
-        write_offset = flash_append_value(temp);
-        printf("Wrote temperature %f into slot %u\n", flash_read_value(write_offset), write_offset);
+        if(debounced_switch == true)
+        {
+            temp = lm75_reg_read(I2C_LM75_ADDR);
+            write_offset = flash_append_value(temp);
+            printf("Wrote temperature %f into slot %u\n", flash_read_value(write_offset), write_offset);
+        }
 
         sleep_ms(5000);
         put_pixel(rand());
