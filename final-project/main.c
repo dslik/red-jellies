@@ -34,11 +34,16 @@ int main() {
     ws2812_init();
     put_pixel(0x00000A00);
 
-    // Do nothing
+    // Sensor Acquisition Loop
+    uint16_t write_offset = 0;
+    float    temp;
+
     while (true) {
-        sleep_ms(1000);
+        temp = lm75_reg_read(I2C_LM75_ADDR);
+        write_offset = flash_append_value(temp);
+        printf("Wrote temperature %f into slot %u\n", flash_read_value(write_offset), write_offset);
+
+        sleep_ms(5000);
         put_pixel(rand());
-    
-        printf("Temp: %f\n", lm75_reg_read(I2C_LM75_ADDR));
     }
 }

@@ -18,4 +18,9 @@ const char* uint32_to_binary_string(uint32_t input);
 void lm75_reg_init(uint8_t address);
 float lm75_reg_read(uint8_t address);
 
+void flash_erase_blocks(void);
+uint16_t flash_find_write_offset(void);
+uint16_t flash_append_value(float value);
+float flash_read_value(uint16_t offset);
+
 #endif // UITLS_H

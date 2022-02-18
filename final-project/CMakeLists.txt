@@ -35,6 +35,7 @@ target_link_libraries(
     pico_stdlib
     hardware_pio
     hardware_i2c
+    hardware_flash
 )
 
 # Disable usb output, enable uart output

@@ -4,6 +4,9 @@
 #include "hardware/pio.h"
 #include "hardware/i2c.h"
 #include "ws2812.pio.h"
+#include "hardware/flash.h"
+#include "hardware/sync.h"
+
 
 #include "utils.h"
 
@@ -13,6 +16,9 @@
 
 
 char binary_string[] = "00000000000000000000000000000000";
+
+#define FLASH_START XIP_BASE
+#define FLASH_OFFSET (1024 * 1024)
 
 // Private Prototypes
 float lm75_reg_to_degrees(uint8_t low, uint8_t high);
@@ -56,8 +62,14 @@ const char* uint32_to_binary_string(uint32_t input)
 
 // ---------------------------------------------------------------------------------
 // WS2812 Smart LED Utilities
-// From Pi Pico WS2812 PIO Example
+// ---------------------------------------------------------------------------------
+// Source:  Pi Pico WS2812 PIO example code
+//          https://github.com/raspberrypi/pico-examples/blob/master/pio/ws2812/ws2812.c
+// ---------------------------------------------------------------------------------
+// License: BSD 3 Clause
+// ---------------------------------------------------------------------------------
 
+// Initialize the PIO program for talking to WS2812 LEDs
 void ws2812_init(void)
 {
     PIO pio = pio0;
@@ -68,10 +80,12 @@ void ws2812_init(void)
     ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, true);
 }
 
+// Set the pixel color of a WS2812
 void put_pixel(uint32_t pixel_grb) {
     pio_sm_put_blocking(pio0, 0, pixel_grb << 8u);
 }
 
+// Convert red, green and blue values into a uint32 value
 uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
     return
             ((uint32_t) (r) << 8) |
@@ -81,6 +95,13 @@ uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
 
 // ---------------------------------------------------------------------------------
 // LM75 Temperature Sensor Utilities
+// ---------------------------------------------------------------------------------
+// Source: Copyright 2022 David Slik. Own work.
+//         Routines based on datasheet: https://www.ti.com/lit/ds/symlink/tmp75.pdf
+// ---------------------------------------------------------------------------------
+// Notes:  The temperature sensor will read 0.2 - 0.5 degrees higher after approx
+//         200-500 ms after being powered up.
+// ---------------------------------------------------------------------------------
 
 // Initialize the temperature sensor
 void lm75_reg_init(uint8_t address)
@@ -129,3 +150,95 @@ float lm75_reg_to_degrees(uint8_t low, uint8_t high)
 
     return(convertedTemp);
 }
+
+// ---------------------------------------------------------------------------------
+// Flash Storage Utilities
+// ---------------------------------------------------------------------------------
+// Source: Copyright 2022 David Slik. Own work.
+// ---------------------------------------------------------------------------------
+// Notes:  Flash is initially set to all "1"'s. Sensor values are stored starting
+// from start of flash region.
+// ---------------------------------------------------------------------------------
+
+// Erase flash blocks used for sensor value storage
+// FIXME - Currently only erases a single block to minimize flash wear
+void flash_erase_blocks(void)
+{
+    // Disable interrupts
+    uint32_t interrupts = save_and_disable_interrupts();
+
+    flash_range_erase(FLASH_OFFSET, FLASH_SECTOR_SIZE);
+
+    // Re-enable interrupts
+    restore_interrupts(interrupts);
+}
+
+// Find the next empty slot (4 byte word) that a sensor value can be written into
+uint16_t flash_find_write_offset(void)
+{
+    uint32_t*   flash_word_accessor = NULL;
+    uint16_t    counter = 0;
+
+    flash_word_accessor = (uint32_t*) (FLASH_START + FLASH_OFFSET);
+
+    while(flash_word_accessor[counter] != 0xFFFFFFFF)
+    {
+        counter = counter + 1;
+    }
+
+    return counter;
+}
+
+// Write the sensor value into the next empty slot
+uint16_t flash_append_value(float value)
+{
+    float*      flash_accessor = NULL;
+    uint32_t*   flash_word_accessor = NULL;
+    uint8_t*    flash_byte_accessor = NULL;
+    uint8_t     write_page_data[FLASH_PAGE_SIZE];
+    uint32_t    write_page_index = 0;
+
+    // 4 bytes per float, so 128 values per 512 byte flash page
+    uint16_t    offset = flash_find_write_offset();
+    uint16_t    page_num = offset / 128;
+    uint16_t    page_offset = offset % 128;
+
+
+    // Copy the current flash data into SRAM to preserve it
+    flash_byte_accessor = (uint8_t*) (FLASH_START + FLASH_OFFSET);
+
+    while(write_page_index < FLASH_PAGE_SIZE)
+    {
+        write_page_data[write_page_index] = flash_byte_accessor[write_page_index];
+
+        write_page_index = write_page_index + 1;
+    }
+
+    // Check to make sure we're writing to an uninitialized flash cell
+    flash_word_accessor = (uint32_t*) write_page_data;
+    if(flash_word_accessor[page_offset] != 0xFFFFFFFF)
+    {
+        printf("ERROR - Attempting to write to offset %u that contains value 0x%X\n", page_offset, flash_word_accessor[page_offset]);
+    }
+    else
+    {
+        // Set the value
+        flash_accessor = (float*) write_page_data;
+        flash_accessor[page_offset] = value;
+
+        flash_range_program(FLASH_OFFSET + page_num, write_page_data, FLASH_PAGE_SIZE);
+    }
+
+    return(offset);
+}
+
+// Read a stored sensor value
+float flash_read_value(uint16_t offset)
+{
+    float* flash_accessor = NULL;
+
+    flash_accessor = (float*) (FLASH_START + FLASH_OFFSET);
+
+    return (float) flash_accessor[offset];
+}
+
