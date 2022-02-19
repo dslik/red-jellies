@@ -201,13 +201,13 @@ uint16_t flash_append_value(float value)
     uint32_t    write_page_index = 0;
 
     // 4 bytes per float, so 128 values per 512 byte flash page
+    uint16_t    records_per_page = FLASH_PAGE_SIZE / sizeof(float);
     uint16_t    offset = flash_find_write_offset();
-    uint16_t    page_num = offset / 128;
-    uint16_t    page_offset = offset % 128;
-
+    uint16_t    page_num = offset / records_per_page;
+    uint16_t    page_offset = offset % records_per_page;
 
     // Copy the current flash data into SRAM to preserve it
-    flash_byte_accessor = (uint8_t*) (FLASH_START + FLASH_OFFSET);
+    flash_byte_accessor = (uint8_t*) (FLASH_START + FLASH_OFFSET + (page_num * FLASH_PAGE_SIZE));
 
     while(write_page_index < FLASH_PAGE_SIZE)
     {
@@ -220,7 +220,7 @@ uint16_t flash_append_value(float value)
     flash_word_accessor = (uint32_t*) write_page_data;
     if(flash_word_accessor[page_offset] != 0xFFFFFFFF)
     {
-        printf("ERROR - Attempting to write to offset %u that contains value 0x%X\n", page_offset, flash_word_accessor[page_offset]);
+        printf("ERROR - Attempting to write to offset %u that contains value 0x%X\n", offset, flash_word_accessor[page_offset]);
     }
     else
     {
@@ -228,7 +228,7 @@ uint16_t flash_append_value(float value)
         flash_accessor = (float*) write_page_data;
         flash_accessor[page_offset] = value;
 
-        flash_range_program(FLASH_OFFSET + page_num, write_page_data, FLASH_PAGE_SIZE);
+        flash_range_program(FLASH_OFFSET + (page_num * FLASH_PAGE_SIZE), write_page_data, FLASH_PAGE_SIZE);
     }
 
     return(offset);

@@ -7,6 +7,7 @@
 #include "hardware/pio.h"
 #include "hardware/clocks.h"
 #include "hardware/i2c.h"
+#include "hardware/adc.h"
 
 // Project Includes
 #include "utils.h"
@@ -17,7 +18,7 @@
 
 int main() {
     stdio_init_all();
-    printf("Calor - Starting...\n");
+    printf("\033[2JCalor - Starting...\n");
 
     // Apply 3.3v power to the LM75 temperature
     gpio_init(POWER_OUT);
@@ -37,6 +38,12 @@ int main() {
     ws2812_init();
     put_pixel(0x00000A00);
 
+    // Initialize the ADC
+    adc_init();
+    adc_gpio_init(27);
+    adc_select_input(1);
+
+
     // Sensor Acquisition Loop
     uint16_t write_offset = 0;
     float    temp;
@@ -48,6 +55,11 @@ int main() {
             write_offset = flash_append_value(temp);
             printf("Wrote temperature %f into slot %u\n", flash_read_value(write_offset), write_offset);
         }
+
+        // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
+        const float conversion_factor = 3.3f / (1 << 12);
+        uint16_t result = adc_read();
+        printf("Raw value: 0x%03x, voltage: %f V\n", result, result * conversion_factor);
 
         sleep_ms(5000);
         put_pixel(rand());
