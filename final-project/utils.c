@@ -1,26 +1,28 @@
+// Standard Library Includes
 #include <stdio.h>
 #include <stdlib.h>
 
+// Target Includes
 #include "hardware/pio.h"
 #include "hardware/i2c.h"
 #include "ws2812.pio.h"
 #include "hardware/flash.h"
 #include "hardware/sync.h"
 
-
+// Project Includes
 #include "utils.h"
 
+// Constants
 #define I2C_SDA_PIN 16
 #define I2C_SCL_PIN 17
 #define WS2812_PIN  18
 #define SWITCH_IN   14
 
-
-
-char binary_string[] = "00000000000000000000000000000000";
-
 #define FLASH_START XIP_BASE
 #define FLASH_OFFSET (1024 * 1024)
+
+// Globals
+char binary_string[] = "00000000000000000000000000000000";
 
 // Private Prototypes
 float lm75_reg_to_degrees(uint8_t low, uint8_t high);
@@ -109,6 +111,9 @@ uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
 void lm75_reg_init(uint8_t address)
 {
     int ret;
+
+    // Assume just powered on, so give a few ms to stablize
+    sleep_ms(10);
 
     // Initialize the i2c subsystem
     i2c_init(i2c_default, 100 * 1000);

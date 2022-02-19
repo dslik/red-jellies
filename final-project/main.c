@@ -11,6 +11,7 @@
 
 // Project Includes
 #include "utils.h"
+#include "uart.h"
 
 #define POWER_OUT       9
 #define I2C_LM75_ADDR   0x77
@@ -18,15 +19,14 @@
 
 int main() {
     stdio_init_all();
+    uart_setup();
+
     printf("\033[2JCalor - Starting...\n");
 
     // Apply 3.3v power to the LM75 temperature
     gpio_init(POWER_OUT);
     gpio_set_dir(POWER_OUT, GPIO_OUT);
     gpio_put(POWER_OUT, 1);
-    
-    // Give the temperature sensor time to stabilize
-    sleep_ms(10);
 
     // Initialize the temperature sensor
     lm75_reg_init(I2C_LM75_ADDR);

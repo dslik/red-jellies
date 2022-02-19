@@ -18,6 +18,7 @@ add_executable(
     ${PROJECT_NAME} 
     main.c
     utils.c
+    uart.c
 )
 
 # Create C header file with the name <pio program>.pio.h
@@ -36,6 +37,7 @@ target_link_libraries(
     hardware_pio
     hardware_i2c
     hardware_flash
+    hardware_adc
 )
 
 # Disable usb output, enable uart output
