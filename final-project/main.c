@@ -59,10 +59,13 @@ int main() {
             if(strcmp(command, "help") == 0)
             {
                 printf("Commands:\n");
-                printf("\"voltage\" - displays the current VCC rail voltage\n");
-                printf("\"temp\"    - displays the current temperature\n");
-                printf("\"colour\"  - changes the color of the RGB LED to a random value\n");
-                printf("\"CTRL-C\"  - Escape from command mode\n");
+                printf("\"voltage\"            - displays the current VCC rail voltage\n");
+                printf("\"temp\"               - displays the current temperature\n");
+                printf("\"temp records count\" - displays the current temperature\n");
+                printf("\"temp records print\" - displays the current temperature\n");
+                printf("\"temp records clear\" - displays the current temperature\n");
+                printf("\"colour\"             - changes the color of the RGB LED to a random value\n");
+                printf("CTRL-C                 - Escape from command mode\n");
                 uart_command_clear();
             }
             else if(strcmp(command, "voltage") == 0)
@@ -77,6 +80,38 @@ int main() {
             {
                 temp = lm75_reg_read(I2C_LM75_ADDR);
                 printf("Current temperature is: %f %cC\n", temp, 0xB0);
+                uart_command_clear();
+            }
+            else if(strcmp(command, "temp records count") == 0)
+            {
+                printf("There are %u records stored.\n", flash_find_write_offset());
+                uart_command_clear();
+            }
+            else if(strcmp(command, "temp records print") == 0)
+            {
+                uint16_t num_records = flash_find_write_offset();
+                uint16_t counter = 0;
+
+                printf("{ \"temperatures\" : [");
+                while(counter < num_records)
+                {
+                    printf(" %f", flash_read_value(counter));
+
+                    if(counter + 1 != num_records)
+                    {
+                        printf(",");
+                    }
+
+                    counter = counter + 1;
+                }
+                printf(" ] }\n");
+                uart_command_clear();
+            }
+            else if(strcmp(command, "temp records clear") == 0)
+            {
+                printf("Erasing Flash...\n");
+                flash_erase_blocks();
+                printf("Flash erased.\n");
                 uart_command_clear();
             }
             else if(strcmp(command, "colour") == 0)

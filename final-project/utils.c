@@ -20,6 +20,8 @@
 
 #define FLASH_START XIP_BASE
 #define FLASH_OFFSET (1024 * 1024)
+#define FLASH_RECORDS_PER_PAGE  (FLASH_PAGE_SIZE / sizeof(float))
+
 
 // Globals
 char binary_string[] = "00000000000000000000000000000000";
@@ -171,10 +173,27 @@ float lm75_reg_to_degrees(uint8_t low, uint8_t high)
 // FIXME - Currently only erases a single block to minimize flash wear
 void flash_erase_blocks(void)
 {
+    uint16_t records_in_use = flash_find_write_offset();
+    uint16_t pages_in_use = (records_in_use / FLASH_RECORDS_PER_PAGE) + 1;
+    uint16_t sectors_in_use = (pages_in_use / FLASH_SECTOR_SIZE) + 1;
+    uint16_t sector_counter = 0;
+
+    printf("Flash usage: %u records in use\n", records_in_use);
+    printf("             %u records per page\n", FLASH_RECORDS_PER_PAGE);
+    printf("             %u pages in use\n", pages_in_use);
+    printf("             %u pages per sector\n", FLASH_SECTOR_SIZE / FLASH_PAGE_SIZE);
+    printf("             %u sectors in use\n", sectors_in_use);
+
     // Disable interrupts
     uint32_t interrupts = save_and_disable_interrupts();
 
-    flash_range_erase(FLASH_OFFSET, FLASH_SECTOR_SIZE);
+    while(sector_counter < sectors_in_use)
+    {
+        printf("Erasing flash sector at address %lu, size %lu\n", FLASH_OFFSET + (FLASH_SECTOR_SIZE * sector_counter), FLASH_SECTOR_SIZE);
+        flash_range_erase(FLASH_OFFSET + (FLASH_SECTOR_SIZE * sector_counter), FLASH_SECTOR_SIZE);
+
+        sector_counter = sector_counter + 1;
+    }
 
     // Re-enable interrupts
     restore_interrupts(interrupts);
@@ -206,10 +225,9 @@ uint16_t flash_append_value(float value)
     uint32_t    write_page_index = 0;
 
     // 4 bytes per float, so 128 values per 512 byte flash page
-    uint16_t    records_per_page = FLASH_PAGE_SIZE / sizeof(float);
     uint16_t    offset = flash_find_write_offset();
-    uint16_t    page_num = offset / records_per_page;
-    uint16_t    page_offset = offset % records_per_page;
+    uint16_t    page_num = offset / FLASH_RECORDS_PER_PAGE;
+    uint16_t    page_offset = offset % FLASH_RECORDS_PER_PAGE;
 
     // Copy the current flash data into SRAM to preserve it
     flash_byte_accessor = (uint8_t*) (FLASH_START + FLASH_OFFSET + (page_num * FLASH_PAGE_SIZE));

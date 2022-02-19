@@ -75,7 +75,7 @@ void uart_rx_isr(void)
                 if((collect_string_pos == 0) && (collect_active == 0))
                 {
                     collect_active = 1;
-                    printf("> ");
+                    printf("\n> ");
                 }
             }
 
@@ -102,7 +102,7 @@ void uart_rx_isr(void)
                 if((collect_string_pos == 0) && (collect_active == 0))
                 {
                     collect_active = 1;
-                    printf("> ");
+                    printf("\n> ");
                 }
             }
         }
