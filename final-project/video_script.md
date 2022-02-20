@@ -94,7 +94,9 @@ So let's move on to the state machine.
 
 Calor is designed to spend most of its time off.
 
-When it wakes up, it checks the charging voltage. Depending on the charging voltage it does things differently.
+Each time it wakes up, it checks the charging voltage.
+
+Depending on the charging voltage it does several different things.
 
 Let's demonstrate this:
 
@@ -102,14 +104,14 @@ Let's demonstrate this:
 
 (type "simulate")
 
-Since the charging voltage is zero (as it would be when it's out in the field), Calor collects temperature values.
+Since the charging voltage is zero when it's deployed out in the field, Calor senses this and collects temperature values.
 
-Let's increase the voltage to simulate a NFC phone being placed near the device:
+Let's increase the voltage to simulate a NFC phone being placed near the device...
 
-Now it is transferring the stored data.
+When this is detected, Calor transfers the stored data.
 
 And if we increase the voltage again to simulate charging...
 
-We see that it detects this, and clears the stored data, and is ready to deploy out in the field again.
+We see that Calor detects this, and clears the stored data, so that it is ready to deploy out in the field again.
 
-That concludes my presentation. Thank you for watching.
+This concludes my presentation. Thank you for watching.
