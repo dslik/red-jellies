@@ -20,7 +20,7 @@ Additional bonus points are available by having a version control history showin
 
 # Final Submission
 
-(a) Link to video - FIXME
+(a) [Link to video](https://github.com/dslik/red-jellies/blob/main/final-project/Final%20Project%20Video.mp4)
 
 (b) [Final Project Report](https://github.com/dslik/red-jellies/blob/main/final-project/final-project-report.md)
 
