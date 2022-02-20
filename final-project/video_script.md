@@ -6,7 +6,7 @@
 2. Reset the program
 3. Make sure pot is turned all the way to the clockwise
 4. Clear the scope (set trigger to "Auto", then "Normal")
-5. Get OBS ready
+5. Get OBS ready (scene selector active)
 
 ## Script
 
@@ -14,19 +14,17 @@ Hello, and welcome to my final project video for the Classpert "Making Embedded 
 
 My final project is "Calor", a low-cost outdoor temperature logger. This video focuses on the software aspects of Calor.
 
-(make sure scene selector window is active)
-
 As you can see on my right, (gesture to right) Calor is prototyped on a breadboard, using a Raspberry Pi RP2040 board I was working on for another project.
 
 (switch to board image scene) Let's take a closer a closer look.
-The RP2040 (on a Pi Pico) is connected to an I2C temperature sensor. A simple resistor divider allows me to simulating the charging voltage.
-Finally, an WS2812 smart-LED allows me to generate different colours of light.
+The RP2040 (on a Pi Pico) is connected to an I2C temperature sensor. A simple voltage divider allows me to simulating the charging voltage.
+Finally, an WS2812 smart LED allows me to generate different colours of light.
 
 Since this class is focused on embedded systems, let's look at how these components work together.
 
 (switch to scope scene)
 
-In order to log the temperature, we need to from the temperature sensor. This is done via a protocol known as I squared C (I2C).
+In order to log the temperature, we need to read data from the temperature sensor. This is done via a protocol known as I squared C (I2C).
 
 (trigger a temperature sample)
 
@@ -43,7 +41,11 @@ Let's take a look at the commands available:
 
 Calor allows us to check the supply voltages:
 
-(type voltage supply, then voltage charge)
+(type voltage supply)
+
+And the charging voltage.
+
+(Type voltage charge)
 
 These are measured using the on-chip ADC.
 
@@ -92,7 +94,7 @@ Let's demonstrate this:
 (type "temp records clear")
 (type "simulate")
 
-Since the charging voltage is zero (it's out in the field), Calor collects temperature values.
+Since the charging voltage is zero (as it would be when it's out in the field), Calor collects temperature values.
 
 Let's increase the voltage to simulate a NFC phone being placed near the device:
 
