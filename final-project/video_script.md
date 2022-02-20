@@ -16,8 +16,12 @@ My final project is "Calor", a low-cost outdoor temperature logger. This video f
 
 As you can see on my right, (gesture to right) Calor is prototyped on a breadboard, using a Raspberry Pi RP2040 board I was working on for another project.
 
-(switch to board image scene) Let's take a closer a closer look.
+(switch to board image scene)
+
+Let's take a closer a closer look.
+
 The RP2040 (on a Pi Pico) is connected to an I2C temperature sensor. A simple voltage divider allows me to simulating the charging voltage.
+
 Finally, an WS2812 smart LED allows me to generate different colours of light.
 
 Since this class is focused on embedded systems, let's look at how these components work together.
@@ -29,6 +33,7 @@ In order to log the temperature, we need to read data from the temperature senso
 (trigger a temperature sample)
 
 Here's what the I2C waveform looks like. The yellow trace is the I2C clock, and the red trace is the I2C data, with the protocol analysis on the bottom.
+
 0xEF is the request to read a register, and 0x17 and 0x80 are the two's complement temperature value.
 
 When processed, we see that the temperature is 23.5 degrees Celsius.
@@ -52,6 +57,7 @@ These are measured using the on-chip ADC.
 We'll get back to this in few minutes.
 
 Since Calor's primary purpose is to log temperatures, we need a way to store temperatures over time. This is done by programming them into flash.
+
 Each time a new temperature is read, it is stored into a previously erased flash page.
 
 Let's use our debugging button to store some samples:
@@ -77,6 +83,7 @@ Let's take a closer look at what happened. But first, a warning that there will 
 (switch to video scene)
 
 This is recorded from an iPhone, which is what would be used to capture the temperature data.
+
 The different colours are distinguishable from each other, and encode the temperature data.
 
 So let's move on to the state machine.
@@ -92,6 +99,7 @@ When it wakes up, it checks the charging voltage. Depending on the charging volt
 Let's demonstrate this:
 
 (type "temp records clear")
+
 (type "simulate")
 
 Since the charging voltage is zero (as it would be when it's out in the field), Calor collects temperature values.
