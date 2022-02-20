@@ -59,12 +59,13 @@ int main() {
             if(strcmp(command, "help") == 0)
             {
                 printf("Commands:\n");
-                printf("\"voltage\"            - displays the current VCC rail voltage\n");
-                printf("\"temp\"               - displays the current temperature\n");
-                printf("\"temp records count\" - displays the current temperature\n");
-                printf("\"temp records print\" - displays the current temperature\n");
-                printf("\"temp records clear\" - displays the current temperature\n");
-                printf("\"colour\"             - changes the color of the RGB LED to a random value\n");
+                printf("\"voltage\"            - Displays the current VCC rail voltage\n");
+                printf("\"temp\"               - Displays the current temperature\n");
+                printf("\"temp records count\" - Displays the current temperature\n");
+                printf("\"temp records print\" - Displays the current temperature\n");
+                printf("\"temp records clear\" - Displays the current temperature\n");
+                printf("\"colour\"             - Changes the color of the RGB LED to a random value\n");
+                printf("\"clear\"              - Clear the screen\n");
                 printf("CTRL-C                 - Escape from command mode\n");
                 uart_command_clear();
             }
@@ -117,6 +118,11 @@ int main() {
             else if(strcmp(command, "colour") == 0)
             {
                 put_pixel(rand());
+                uart_command_clear();
+            }
+            else if(strcmp(command, "clear") == 0)
+            {
+                printf("\033[2J");
                 uart_command_clear();
             }
             else

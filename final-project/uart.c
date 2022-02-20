@@ -110,11 +110,14 @@ void uart_rx_isr(void)
         // Only add printable characters to the command string
         if((character >= 0x20) && (character <= 0x7E))
         {
-            collect_string[collect_string_pos] = character;
-            collect_string[collect_string_pos + 1] = 0;
-            uart_putc(uart0, character);
+            if(collect_string_pos < COMMAND_STRING_MAX_LENGTH)
+            {
+                collect_string[collect_string_pos] = character;
+                collect_string[collect_string_pos + 1] = 0;
+                uart_putc(uart0, character);
 
-            collect_string_pos = collect_string_pos + 1;
+                collect_string_pos = collect_string_pos + 1;
+            }
         }
 
         // Handle backspace
