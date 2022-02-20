@@ -52,8 +52,7 @@ int main() {
     // Initialize the ADC
     adc_init();
     adc_gpio_init(27);
-    adc_select_input(1);
-
+    adc_gpio_init(26);
 
     printf("Calor - Ready\n");
 
@@ -69,7 +68,8 @@ int main() {
             if(strcmp(command, "help") == 0)
             {
                 printf("Commands:\n");
-                printf("\"voltage\"            - Displays the current VCC rail voltage\n");
+                printf("\"voltage supply\"     - Displays the current VCC rail voltage\n");
+                printf("\"voltage charge\"     - Displays the current charging rail voltage\n");
                 printf("\"temp\"               - Displays the current temperature\n");
                 printf("\"temp records count\" - Displays the number of stored temperatures\n");
                 printf("\"temp records print\" - Displays all stored temperatures\n");
@@ -81,10 +81,22 @@ int main() {
                 printf("CTRL-C                 - Escape from command mode\n");
                 uart_command_clear();
             }
-            else if(strcmp(command, "voltage") == 0)
+            else if(strcmp(command, "voltage supply") == 0)
             {
                 // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
                 const float conversion_factor = 3.3f / (1 << 12);
+
+                adc_select_input(1);
+                uint16_t result = adc_read();
+                printf("Current voltage is: %f V (Raw value: 0x%03x)\n", result * conversion_factor, result);
+                uart_command_clear();
+            }
+            else if(strcmp(command, "voltage charge") == 0)
+            {
+                // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
+                const float conversion_factor = 3.3f / (1 << 12);
+
+                adc_select_input(0);
                 uint16_t result = adc_read();
                 printf("Current voltage is: %f V (Raw value: 0x%03x)\n", result * conversion_factor, result);
                 uart_command_clear();
