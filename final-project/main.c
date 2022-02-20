@@ -27,6 +27,36 @@ const uint32_t optical_output_table[] = {0x00000000, 0x00000080, 0x000000FF,
                                          0x00FF8000, 0x00FF8080, 0x00FF80FF,
                                          0x00FFFF00, 0x00FFFF80, 0x00FFFFFF};
 
+// 12-bit conversion, assume max value == ADC_VREF == 3.3 V
+const float conversion_factor = 3.3f / (1 << 12);
+
+void optical_output(void)
+{
+    float    temp;
+    uint16_t num_records = flash_find_write_offset();
+    uint16_t counter = 0;
+    printf("Transferring %u records optically...\n", num_records);
+
+    while(counter < num_records)
+    {
+        temp = flash_read_value(counter);
+        uint8_t*   access_pointer = (uint8_t*) &temp;
+
+        put_pixel(optical_output_table[(access_pointer[2] & 0xF0) >> 4]);
+        sleep_ms(5);
+        put_pixel(optical_output_table[(access_pointer[2] & 0x0F) >> 0]);
+        sleep_ms(5);
+        put_pixel(optical_output_table[(access_pointer[3] & 0xF0) >> 4]);
+        sleep_ms(5);
+        put_pixel(optical_output_table[(access_pointer[3] & 0x0F) >> 0]);
+        sleep_ms(5);
+
+        counter = counter + 1;
+    }
+
+    put_pixel(0x00000000);
+    printf("Transfer complete.\n");
+}
 
 int main() {
     stdio_init_all();
@@ -76,6 +106,7 @@ int main() {
                 printf("\"temp records clear\" - Erases all stored temperatures\n");
                 printf("\"temp optical\"       - Transfers the current temperature optically\n");
                 printf("\"temp optical print\" - Transfers all stored temperatures optically\n");
+                printf("\"simulate\"           - Demonstrates the Calor state machine\n");
                 printf("\"colour\"             - Changes the color of the RGB LED to a random value\n");
                 printf("\"clear\"              - Clear the screen\n");
                 printf("CTRL-C                 - Escape from command mode\n");
@@ -83,9 +114,6 @@ int main() {
             }
             else if(strcmp(command, "voltage supply") == 0)
             {
-                // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
-                const float conversion_factor = 3.3f / (1 << 12);
-
                 adc_select_input(1);
                 uint16_t result = adc_read();
                 printf("Current voltage is: %f V (Raw value: 0x%03x)\n", result * conversion_factor, result);
@@ -93,9 +121,6 @@ int main() {
             }
             else if(strcmp(command, "voltage charge") == 0)
             {
-                // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
-                const float conversion_factor = 3.3f / (1 << 12);
-
                 adc_select_input(0);
                 uint16_t result = adc_read();
                 printf("Current voltage is: %f V (Raw value: 0x%03x)\n", result * conversion_factor, result);
@@ -178,31 +203,52 @@ int main() {
             }
             else if (strcmp(command, "temp optical print") == 0)
             {
-                uint16_t num_records = flash_find_write_offset();
-                uint16_t counter = 0;
-                printf("Transferring %u records optically...\n", num_records);
-
-                while(counter < num_records)
-                {
-                    temp = flash_read_value(counter);
-                    uint8_t*   access_pointer = (uint8_t*) &temp;
-
-                    put_pixel(optical_output_table[(access_pointer[2] & 0xF0) >> 4]);
-                    sleep_ms(5);
-                    put_pixel(optical_output_table[(access_pointer[2] & 0x0F) >> 0]);
-                    sleep_ms(5);
-                    put_pixel(optical_output_table[(access_pointer[3] & 0xF0) >> 4]);
-                    sleep_ms(5);
-                    put_pixel(optical_output_table[(access_pointer[3] & 0x0F) >> 0]);
-                    sleep_ms(5);
-
-                    counter = counter + 1;
-                }
-
-                put_pixel(0x00000000);
-                printf("Transfer complete.\n");
+                optical_output();
 
                 uart_command_clear();
+            }
+            else if (strcmp(command, "simulate") == 0)
+            {
+                // Test the calor state machine
+                printf("Demonstrating the Calor state machine. Press any key to pause.\n");
+
+                uart_command_clear();
+                
+                while(collect_active == false)
+                {
+                    adc_select_input(0);
+                    float charging_volage = adc_read() * conversion_factor;
+                    
+                    if(charging_volage >= 2.5f)
+                    {
+                        printf("Charging voltage detected (%f)\n", charging_volage);
+
+                        temp = flash_read_value(0);
+                        uint32_t*   flash_word_accessor = (uint32_t*) &temp;
+
+                        if(flash_word_accessor[0] != 0xFFFFFFFF)
+                        {
+                            printf("Stored temperatures detected. Erasing stored values\n");
+                            flash_erase_blocks();
+                        }
+                        put_pixel(0x00110000);
+                    }
+                    else if(charging_volage >= 0.5f)
+                    {
+                        printf("NFC voltage detected (%f)\n", charging_volage);
+
+                        optical_output();
+                    }
+                    else
+                    {
+                        printf("No voltage detected (%f), collecting data...\n", charging_volage);
+
+                        flash_append_value(lm75_reg_read(I2C_LM75_ADDR));
+                        put_pixel(0x00001100);
+                    }
+
+                    sleep_ms(5000);
+                }
             }
             else
             {
@@ -221,8 +267,6 @@ int main() {
                     write_offset = flash_append_value(temp);
                     printf("Wrote temperature %f into slot %u\n", flash_read_value(write_offset), write_offset);
                 }
-
-                //sleep_ms(5000);
             }
         }
 
