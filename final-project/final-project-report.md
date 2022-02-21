@@ -137,15 +137,11 @@ Thank you for purchasing Calor temperature sensors. While Calor has been designe
 
 Each sensor ships in an egg carton. While sensors are rugged and difficult to damage, they should be visually inspected before use. A cracked or abraided sensor should not be deployed, and a spare or replacement should be used instead.
 
-TODO: Photo of sensors in packaging
-
 Sensors are completely interchangable, and do not need to be individually kept track of.
 
 2. Unpack your charger
 
 Calor sensors are wirelessly charged. The charger can be placed on any non-conductive flat surface, and requires 2 amps of 12 VDC.
-
-TODO: Photo of charging plate with supplied power adapter
 
 Tip: Charging works best when their are no matellic objects within three feet of the charger.
 
@@ -168,11 +164,7 @@ The first step to capturing temperature data in the field is to install the Calo
 * In Progress Sessions
 * Completed Sessions
 
-TODO: Add screen shot of app main screen
-
 Select "New Session", and give the session a name.
-
-TODO: Add screen shot of new session add name
 
 Make sure you have your smart phone fully charged before you go out into the field.
 
@@ -180,19 +172,11 @@ Sensors should be placed in a carrying bag for deployment. We recommend [Bushpro
 
 When you are at the location were you want to place the sensor, select "In Progress Sessions", and select the session you named earlier.
 
-TODO: Add screen shot of in progress session selection
-
 Select "Drop a Sensor", and wait for the screen to go from red to yellow.
-
-TODO: Add screen shot of drop a sensor screen
 
 When the screen goes yellow, you will see the GPS coordinates of your current location, and you can take a sensor out of your bags and hold the top (rounded end) of the sensor up to the phone camera. The phone will activate the sensor, and record the time and serial number of the sensor. When this data is received, the phone will beep, the screen will change to green, and you will be able to capture a photo of the sensor in-situ if desired, then will return you to the selected session, ready for you to drop the next sensor.
 
-TODO: Add screen shots of sensor drop process
-
 You will be able to rapidly deploy sensors by using your thumb to navigate through the screens while you simultaniously place sensors using your dominant hand. With practice, deploying a sensor should take under 30 seconds.
-
-TODO: Add video of rapid placement
 
 Sensors can be added to a session at any time, but the best data is obtained when all of the sensors are placed together.
 
@@ -202,8 +186,6 @@ Sensors can be collected by selecting "In Progress Sessions", then selecting the
 
 The application will use your current GPS coordinates and the order in which you placed the sensors to guide you from sensor to sensor, showing you a live map with the position of each sensor, and a picture of the next sensor to collect when you have arrived at the location where the sensor is placed. You can choose to proceed in the original order or reverse order.
 
-TODO: Add screen shot of collect sensor screen
-
 When you have picked up the sensor, tap on the photo, and when the screen goes yellow, hold the top of the sensor up to the phone camera. The phone will beep and the screen will go green once the sensor data has been read, then the sensor will be deactivated.
 
 Once all sensors have been collected (or if there are sensors missing), complete your session by selecting "Complete Session".
@@ -211,8 +193,6 @@ Once all sensors have been collected (or if there are sensors missing), complete
 6. Visualize your data
 
 Once all of the sensors have been collected, data can be visualized by selecting "Completed Sessions". Here you can see a heatmap of the sensor data on top of Google Street Maps or satellite maps, use a slider to see how temperature values change over time, and see charts of individual times.
-
-TODO: Add screen shot of data visualizations
 
 Raw sensor data, charts, maps and animations can be saved or shared via e-mail and instant messaging.
 
@@ -463,18 +443,17 @@ There are no provisions for field upgradabilty, as that would require an opening
 
 ## Software
 
-TODO: Link to code.
+To build this project, follow the below instructions:
 
-# Futures
+1. Download and compile the Raspberry Pi SDK: https://github.com/raspberrypi/pico-sdk
+2. Check out the source code for this project: https://github.com/dslik/red-jellies/tree/main/final-project
+3. Create a "build" directory.
+4. In the "build" directory, run "cmake .."
+5. Run "make" to build the project.
 
-As the power subsystem is not complete, future work on this project would likely focus on that area.
+# Future Enhancements
 
-The sensor architecture outlined could be extended to other low-power sensors, such as a light level/colour sensor. However, the design tradeoffs around resin encapsulation and the use of a super capacitor imposes significant limitations on which sensors could be used.
+* As the power subsystem is not complete, future work on this project would likely focus on that area.
+* The sensor architecture outlined could be extended to other low-power sensors, such as a light level/colour sensor. However, the design tradeoffs around resin encapsulation and the use of a super capacitor imposes significant limitations on which sensors could be used.
+* Photos should be added to the end-user documentation section
 
-TODO: Elaborate more here.
-
-# Resources
-
-# Grading
-
-A button-driven interrupt is not used, because there are no buttons in the system. Instead, a timer interrupt to provide software watchdog functionality, and is used to demonstrate understanding of interrupt handling.
