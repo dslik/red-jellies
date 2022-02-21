@@ -18,7 +18,7 @@ Calor is the final project for the Classpert [Making Embedded Systems](https://c
   * Software Subsystems
     * Firmware
     * Smartphone Application
-* Implementation
+* Implementation Notes
   * Power Subsystem
     * Charging
     * Power Storage
@@ -135,15 +135,15 @@ Thank you for purchasing Calor temperature sensors. While Calor has been designe
 
 1. Unpack your sensors
 
-Each sensor ships in an egg carton. While sensors are rugged and difficult to damage, they should be visually inspected before use. A cracked or abraided sensor should not be deployed, and a spare or replacement should be used instead.
+Each sensor ships in an egg carton. While sensors are rugged and difficult to damage, they should be visually inspected before use. A cracked or abraded sensor should not be deployed, and a spare or replacement should be used instead.
 
-Sensors are completely interchangable, and do not need to be individually kept track of.
+Sensors are fully interchangeable, and do not need to be individually kept track of.
 
 2. Unpack your charger
 
 Calor sensors are wirelessly charged. The charger can be placed on any non-conductive flat surface, and requires 2 amps of 12 VDC.
 
-Tip: Charging works best when their are no matellic objects within three feet of the charger.
+Tip: Charging works best when their are no metallic objects within three feet of the charger.
 
 3. Charge your sensors
 
@@ -176,7 +176,7 @@ Select "Drop a Sensor", and wait for the screen to go from red to yellow.
 
 When the screen goes yellow, you will see the GPS coordinates of your current location, and you can take a sensor out of your bags and hold the top (rounded end) of the sensor up to the phone camera. The phone will activate the sensor, and record the time and serial number of the sensor. When this data is received, the phone will beep, the screen will change to green, and you will be able to capture a photo of the sensor in-situ if desired, then will return you to the selected session, ready for you to drop the next sensor.
 
-You will be able to rapidly deploy sensors by using your thumb to navigate through the screens while you simultaniously place sensors using your dominant hand. With practice, deploying a sensor should take under 30 seconds.
+You will be able to rapidly deploy sensors by using your thumb to navigate through the screens while you simultaneously place sensors using your dominant hand. With practice, deploying a sensor should take under 30 seconds.
 
 Sensors can be added to a session at any time, but the best data is obtained when all of the sensors are placed together.
 
@@ -196,11 +196,11 @@ Once all of the sensors have been collected, data can be visualized by selecting
 
 Raw sensor data, charts, maps and animations can be saved or shared via e-mail and instant messaging.
 
-7. WHat happens when something goes wrong?
+7. What happens when something goes wrong?
 
-If a sensor doesn't respond when dropping a sensor, it may be defective. Put it away in a seperate pouch to check later.
+If a sensor doesn't respond when dropping a sensor, it may be defective. Put it away in a separate pouch to check later.
 
-If a sensor doesn't respond when collected, it may have become completely discharged. Holding your phone against the sensor for 1 minute should provide enough of a charge to allow the data to be read. If it still doesn't respond, put it away in a seperate pouch, and use the charger to recharge the sensor.
+If a sensor doesn't respond when collected, it may have become completely discharged. Holding your phone against the sensor for 1 minute should provide enough of a charge to allow the data to be read. If it still doesn't respond, put it away in a separate pouch, and use the charger to recharge the sensor.
 
 If a sensor doesn't blink when charging, it is likely defective, and should be recycled as e-waste.
 
@@ -245,7 +245,7 @@ The power subsystem contains the following components:
 * Super capacitor protection: A zener diode that prevents the charging voltage from exceeding the rating of the super capacitor.
 * Sense rails: Voltage monitoring to allow software measurement of the charging and super capacitor rails
 * Boost converter: Supplies a regulated voltage for the microprocessor
-* Power-down and Wakeup delay: Low-power logic that when activated, powers down the boost converter and waits for a period of time before powering it back up. This component is also activated when indictive power transfer is detected.
+* Power-down and Wakeup delay: Low-power logic that when activated, powers down the boost converter and waits for a period of time before powering it back up. This component is also activated when inductive power transfer is detected.
 
 ![image](https://user-images.githubusercontent.com/5757591/149612768-e282e87c-e3b5-48d2-8977-7c01a3bf3f5d.png)
 
@@ -322,7 +322,7 @@ The three conditions are:
 
 Figure 9 - Firmware state machine
 
-The simplified state tabel is as follows:
+The simplified state table is as follows:
 
 ```
 State           | Actions                                            | Next State
@@ -342,7 +342,7 @@ Powered Off     |            |               |           | Power Off | Uninitial
 
 > ⚠️ The smartphone application is out of scope for the purposes of the Making Embedded Systems final project
 
-# Implementation
+# Implementation Notes
 
 ## Power Subsystem
 
@@ -364,7 +364,7 @@ The presence of a charging voltage will wake up a sensor that is sleeping.
 
 The power charging rail voltage is monitored by an ADC in the RP2040. This allows the Calor firmware to detect the charging state when it wakes up.
 
-The power storage rail voltage is also monitored by a seperate ADC input. This permits Calor to detect when the remaining charge is getting too low for continued operation, and to store a marker indicating that subsequent data is not valid.
+The power storage rail voltage is also monitored by a separate ADC input. This permits Calor to detect when the remaining charge is getting too low for continued operation, and to store a marker indicating that subsequent data is not valid.
 
 ### Overvoltage Protection
 
@@ -380,15 +380,15 @@ Calor's power consumption when running in test mode is approximately 35 mA.
 
 The three very small blips on the left are temperature sample collection.
 
-The two moderate spikes repesent the power consumption to optically transmit the temperature data.
+The two moderate spikes represent the power consumption to optically transmit the temperature data.
 
 The large spike on the right is erasing the flash sectors used to store temperature data.
 
-Further analysis indicates that power consumption can be reduced to approximatley 10 mA, as 5 of the 15 mA in the below diagram is consumed by a power indicator LED that is not included in the final hardware design.
+Further analysis indicates that power consumption can be reduced to approximately 10 mA, as 5 of the 15 mA in the below diagram is consumed by a power indicator LED that is not included in the final hardware design.
 
 ![image](https://user-images.githubusercontent.com/5757591/154879372-2c0f65da-5a6d-48b8-b5dc-0a0b922dcc88.png)
 
-Figure 11 - Power optomization
+Figure 11 - Power optimization
 
 Calor's primary method of power efficiency is to remain powered down for a majority of the time.
 
@@ -400,7 +400,7 @@ Assuming 15 mA for 1 second, and a duty cycle of 120 seconds of per sample, Calo
 
 Calor uses a Raspberry Pi RP2040 microcontroller. This microcontroller was selected primarily because it was able to be sourced in quantity. Most of the other processors I have worked with are unobtainable at this time.
 
-The RP2040 had all of the built-in perpherials and interfaces required for this project, including an ADC, I2C and programmable I/O.
+The RP2040 had all of the built-in peripherals and interfaces required for this project, including an ADC, I2C and programmable I/O.
 
 ### Flash Storage
 
@@ -454,7 +454,7 @@ No other software libraries are used.
 
 All components have been selected to ensure that they are in-stock and sufficient quantities can be secured to allow for a short-run manufacturing of at least one hundred units.
 
-The choice of the Raspberry Pi Pico was primarily based on component avaiability and that this microprocessor is sufficiently capable for the required firmware, while being very low power.
+The choice of the Raspberry Pi Pico was primarily based on component availability and that this microprocessor is sufficiently capable for the required firmware, while being very low power.
 
 The Flash Memory is larger than needed, but smaller capacities could not be secured due to component shortages.
 
@@ -462,15 +462,15 @@ The super capacitor was chosen based on what components were on hand.
 
 ## Packaging
 
-The power storage baord is soldered directly to the super capacitor. The microprocessor board stacks on top of this board, with the power transfer board stacked on top.
+The power storage board is soldered directly to the super capacitor. The microprocessor board stacks on top of this board, with the power transfer board stacked on top.
 
-ALl of these components, once tested and programmed, are encased in a hard resin, which provides protection against the elements. The resin is transparent to permit optical signling, and is wrapped in a white sticker to reflect sunlight and contain instructions and branding.
+All of these components, once tested and programmed, are encased in a hard resin, which provides protection against the elements. The resin is transparent to permit optical signalling, and is wrapped in a white sticker to reflect sunlight and contain instructions and branding.
 
 ## Assembly
 
-Each of the three boards are assembled and tested seperately.
+Each of the three boards are assembled and tested separately.
 
-For prototype-level production, the boards are manually stenciled, with components being placed using a manual pick-and-place machine.
+For prototype-level production, the boards are manually stencilled, with components being placed using a manual pick-and-place machine.
 
 When boards pass board-level tests, they are connected together, then the entire sensor is tested as an integrated unit. Upon a pass, the sensor is encapsulated in resin and package for shipment.
 
@@ -488,7 +488,7 @@ The microprocessor board is tested by verifying connectivity to the microprocess
 
 Firmware can be updated via the SWD port. This is primarily used during development and test, as once encapsulated in resin, these ports are no longer accessible.
 
-There are no provisions for field upgradabilty, as that would require an opening through the layer of enviromental protection provided by the resin.
+There are no provisions for field upgradability, as that would require an opening through the layer of environmental protection provided by the resin.
 
 # Build Instructions
 
