@@ -448,8 +448,9 @@ To build this project, follow the below instructions:
 1. Download and compile the Raspberry Pi SDK: https://github.com/raspberrypi/pico-sdk
 2. Check out the source code for this project: https://github.com/dslik/red-jellies/tree/main/final-project
 3. Create a "build" directory.
-4. In the "build" directory, run "cmake .."
-5. Run "make" to build the project.
+4. To prepare the make files, run the command `cmake ..` from the build directory.
+5. To build the firmware, run the command `make` from the build directory.
+6. To program the Pi Pico via SWD, run the command `openocd -f interface/raspberrypi-swd.cfg -f target/rp2040.cfg -c "program calor.elf verify reset exit"` from the build directory.
 
 # Future Enhancements
 
