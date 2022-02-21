@@ -398,31 +398,47 @@ Assuming 15 mA for 1 second, and a duty cycle of 120 seconds of per sample, Calo
 
 ### Microcontroller
 
+Calor uses a Raspberry Pi RP2040 microcontroller. This microcontroller was selected primarily because it was able to be sourced in quantity. Most of the other processors I have worked with are unobtainable at this time.
+
+The RP2040 had all of the built-in perpherials and interfaces required for this project, including an ADC, I2C and programmable I/O.
+
 ### Flash Storage
+
+An QSPI flash is used for program and data storage. The Pi Pico board (and the Calor board) comes with a 2 MB flash device, with the lower 1 MB reserved for program code and the upper 1 MB reserved for data storage.
 
 ### Temperature Sensor
 
+Calor includes support for two different temperature sensors, the TMP117 and the LM75. Both of these temperature sensors is interfaced to the microcontroller via the I2C bus.
+
 ### Optical Signalling
 
-A WS2812C programmable RGB LED is used for optical data transfer via PWM at 20 Hz, with 16 colours providing an effective bandwidth of 60 bps.
+A WS2812C programmable RGB LED is used for optical data transfer via PWM at 20 Hz, with 32 colours providing an effective bandwidth of 120 bps.
 
 Using an RLE + simple dictionary delta encoding, even thousands of temperature values can be transmitted in under 30 seconds.
 
-TODO: Additional technical detail on transmission, encoding and how it is processed by the smartphone app.
+The smartphone app uses the "slow-mo" video recording feature, identifies the brightest part of the image, then extracts the red, green and blue components of the colour, plus relative brightness, to decode the transmitted data.
 
 ## Software
 
 ### State Management
 
-A watchdog interrupt is used to ensure that the system does not remain stuck powered on if a software or I/O fault occurs.
+When the Calor sensor is powered up, it checks the charging voltage rail and the power storage rail. If the power storage rail is below a certain threshold, it immediately shuts down. If the power storage rail is above a certain threshold, it checks the charging rail.
 
 ### Charging
 
+When Calor sensors are being charged, the voltage on the charging voltage rail is clamped to 3.3 volts. When the Calor sensor is powered up, it erases any stored values.
+
 ### Activation (placement)
+
+When Calor sensors detect a low voltage from the phone's NFC coil, it detects that there are no samples stored, and starts collecting data.
 
 ### Acquisition
 
+Once activated, each time that the Calor sensor is powered up, and there is no voltage on the charging voltage rail, it collects a temperature reading, and stores it into flash. Then the sensor immediately shuts back down.
+
 ### Transfer (collection)
+
+Once activated and having collected temperature readings, when Calor sensors detect a low voltage from the phone's NFC coil, it stops collecting data and transfers stored data optically.
 
 ### Analysis
 
