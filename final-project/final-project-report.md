@@ -2,9 +2,6 @@
 
 Calor is a small re-usable device you can scatter across an area to measure how the temperature changes over time and space. Finally, high-density sensor networks are affordable, quick to deploy, and visualizing beautiful animated heatmaps have never been easier.
 
-* TODO: Add photo of sensor device
-* TODO: Add animation of heatmap visualization
-
 Calor is the final project for the Classpert [Making Embedded Systems](https://classpert.com/classpertx/cohorts/making-embedded-systems) class, and focuses on the microcontroller aspects of Calor. The smartphone app and wireless charging aspects of this project are out of scope in the context of this class, and thus are only covered at a high level.
 
 # Table of Contents
@@ -57,7 +54,7 @@ Calor is the final project for the Classpert [Making Embedded Systems](https://c
 
 # Project Video
 
-* TODO: Add embed of video
+https://user-images.githubusercontent.com/5757591/154876697-cba99191-6a76-4e81-8047-097d2963a7f2.mp4
 
 # Market Analysis
 
