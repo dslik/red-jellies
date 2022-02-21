@@ -386,7 +386,7 @@ The large spike on the right is erasing the flash sectors used to store temperat
 
 Further analysis indicates that power consumption can be reduced to approximatley 10 mA, as 5 of the 15 mA in the below diagram is consumed by a power indicator LED that is not included in the final hardware design.
 
-https://user-images.githubusercontent.com/5757591/153702435-521f7173-82f8-4277-ba9a-0e0c74ba0f77.png![image](https://user-images.githubusercontent.com/5757591/154879372-2c0f65da-5a6d-48b8-b5dc-0a0b922dcc88.png)
+![image](https://user-images.githubusercontent.com/5757591/154879372-2c0f65da-5a6d-48b8-b5dc-0a0b922dcc88.png)
 
 Figure 11 - Power optomization
 
