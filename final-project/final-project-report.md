@@ -210,6 +210,8 @@ If a sensor doesn't blink when charging, it is likely defective, and should be r
 
 ![image](https://user-images.githubusercontent.com/5757591/149612079-d7420201-e9ac-45f7-be58-dffd8b8d6fd5.png)
 
+Figure 2 - Top-level block diagram
+
 Calor consists of the following components:
 
 Charger - Converts DC into a magnetic resonant coupling to induce current into nearby sensor devices to recharge the super capacitor.
@@ -222,18 +224,17 @@ Test System - A harness for testing and programming the sensor before it is enca
 
 > ⚠️ Only the microprocessor subsystem and the test system is in-scope for the class. Other components are being developed on a "best-effort" basis.
 
-
 ## Hardware Subsystems
 
 ![image](https://user-images.githubusercontent.com/5757591/149612333-b4f05702-f7a3-458e-999d-a4ef55c3d2ff.png)
+
+Figure 3 - Subsystem block diagram
 
 __Charging Subsystem__
 
 The charging subsystem contains the following components:
 * Magnetic resonant coupling coil: Receives power from the charger, and to a lesser extent, from the smartphone NFC subsystem
 * Rectifier: Transforms the AC voltage into a DC voltage
-
-TODO: Board design and BOM
 
 __Power Subsystem__
 
@@ -248,11 +249,11 @@ The power subsystem contains the following components:
 
 ![image](https://user-images.githubusercontent.com/5757591/149612768-e282e87c-e3b5-48d2-8977-7c01a3bf3f5d.png)
 
-Figure N - PCB Design
+Figure 4 - Power subsystem PCB design
 
 ![image](https://user-images.githubusercontent.com/5757591/149612782-4a3a35d2-f76c-4d40-9bb3-8139e03a6e8c.png)
 
-Figure N - PCB Rendering
+Figure 5 - Power subsystem PCB rendering
 
 Bill of Materials
 
@@ -281,11 +282,11 @@ The following microprocessor peripherals are used: 2x ADC, I2C, SPI, UART, GPIO 
 
 ![image](https://user-images.githubusercontent.com/5757591/149612875-07ddd5e6-81d5-46aa-b4a8-495df4d1ac63.png)
 
-Figure N - PCB Design
+Figure 6 - Microcontroller PCB design
 
 ![image](https://user-images.githubusercontent.com/5757591/149612896-923925ec-66c8-4d7a-bbff-9ae9d39783da.png)
 
-Figure N - PCB Rendering
+Figure 7 - Microcontroller PCB rendering
 
 Bill of Materials
 
@@ -310,12 +311,16 @@ The firmware implements a three-branch state machine that is performed each time
 
 ![image](https://user-images.githubusercontent.com/5757591/149613011-e065a7b4-dd97-447f-9560-1b7bdca45153.png)
 
+Figure 8 - Firmware flowchart
+
 The three conditions are:
 * Powered up due to charging
 * Powered up due to NFC proximity
 * Powered up due to wakeup timer
 
 ![image](https://user-images.githubusercontent.com/5757591/149613052-e0a3bf4c-2671-46dc-876f-cba32239e43d.png)
+
+Figure 9 - Firmware state machine
 
 The simplified state tabel is as follows:
 
@@ -333,7 +338,6 @@ Powered Off     |            |               |           | Power Off | Uninitial
 ----------------|------------|---------------|-----------|-----------|----------------|--------------|---------------|----------------|
 ```
 
-
 ### Smartphone Application
 
 > ⚠️ The smartphone application is out of scope for the purposes of the Making Embedded Systems final project
@@ -344,17 +348,51 @@ Powered Off     |            |               |           | Power Off | Uninitial
 
 ### Charging
 
+> ⚠️ This hardware aspect of the project is out of scope for the purposes of the Making Embedded Systems final project
+
 ### Power Storage
+
+> ⚠️ This hardware aspect of the project is out of scope for the purposes of the Making Embedded Systems final project
 
 ### Power Regulation
 
+> ⚠️ This hardware aspect of the project is out of scope for the purposes of the Making Embedded Systems final project
+
 ### Power Monitoring
+
+The presence of a charging voltage will wake up a sensor that is sleeping. 
+
+The power charging rail voltage is monitored by an ADC in the RP2040. This allows the Calor firmware to detect the charging state when it wakes up.
+
+The power storage rail voltage is also monitored by a seperate ADC input. This permits Calor to detect when the remaining charge is getting too low for continued operation, and to store a marker indicating that subsequent data is not valid.
 
 ### Overvoltage Protection
 
+> ⚠️ This hardware aspect of the project is out of scope for the purposes of the Making Embedded Systems final project
+
 ### Power Analysis
 
-TODO: Traces of power consumption for each of the three software states.
+![image](https://user-images.githubusercontent.com/5757591/154879040-c842ab95-5675-44e5-abe9-dffd6955057a.png)
+
+Figure 10 - Power consumption
+
+Calor's power consumption when running in test mode is approximately 35 mA.
+
+The three very small blips on the left are temperature sample collection.
+
+The two moderate spikes repesent the power consumption to optically transmit the temperature data.
+
+The large spike on the right is erasing the flash sectors used to store temperature data.
+
+Further analysis indicates that power consumption can be reduced to approximatley 10 mA, as 5 of the 15 mA in the below diagram is consumed by a power indicator LED that is not included in the final hardware design.
+
+https://user-images.githubusercontent.com/5757591/153702435-521f7173-82f8-4277-ba9a-0e0c74ba0f77.png![image](https://user-images.githubusercontent.com/5757591/154879372-2c0f65da-5a6d-48b8-b5dc-0a0b922dcc88.png)
+
+Figure 11 - Power optomization
+
+Calor's primary method of power efficiency is to remain powered down for a majority of the time.
+
+Assuming 15 mA for 1 second, and a duty cycle of 120 seconds of per sample, Calor can continue to collect data for 20 days with a super capacitor capable of storing 40mAh.
 
 ## Microcontroller Subsystem
 
@@ -375,7 +413,6 @@ TODO: Additional technical detail on transmission, encoding and how it is proces
 ## Software
 
 ### State Management
-
 
 A watchdog interrupt is used to ensure that the system does not remain stuck powered on if a software or I/O fault occurs.
 
@@ -429,7 +466,7 @@ The power board is tested by using a programmable power supply to simulate the c
 
 The microprocessor board is tested by verifying connectivity to the microprocessor via the SWD port, programming the firmware into the flash memory, and simulating all three firmware code execution branches by varying the voltage sense inputs.
 
-TODO: If this were to be a real product, EMC and thermal chamber testing would be required.
+> ⚠️ If this were to be a real product, EMC and thermal chamber testing would be required.
 
 ## Firmware Update
 
@@ -477,4 +514,5 @@ To build this project, follow the below instructions:
 * As the power subsystem is not complete, future work on this project would likely focus on that area.
 * The sensor architecture outlined could be extended to other low-power sensors, such as a light level/colour sensor. However, the design tradeoffs around resin encapsulation and the use of a super capacitor imposes significant limitations on which sensors could be used.
 * Photos should be added to the end-user documentation section
+* Additional design work is required to ensure that a whole collection of Calor sensors deployed will have their temperature samples taken with sufficient temporal alignment to be able to enable cross-sensor correlations
 
