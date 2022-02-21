@@ -441,6 +441,26 @@ There are no provisions for field upgradabilty, as that would require an opening
 
 ## Hardware
 
+To use the project software, connect the following hardware to a Raspberry Pi Pico board:
+
+* Connect an LM75 temperature sensor to I2C with address 0x77.
+* Connect a WS2812 data in to GPIO 18
+* Connect the charging power rail to ADC 0 (Pin 26)
+* Connect the supply rail to ADC 1 (Pin 27)
+
+The following pins are used:
+
+```c
+#define I2C_SDA_PIN 16
+#define I2C_SCL_PIN 17
+#define WS2812_PIN  18
+#define SWITCH_IN   14
+```
+
+SWD should be connected up to your development system.
+
+The standard UART (pins 1/2) are used.
+
 ## Software
 
 To build this project, follow the below instructions:
